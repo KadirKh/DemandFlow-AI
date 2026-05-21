@@ -104,8 +104,12 @@ export class ApiClient {
     }
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: response.statusText }));
-      throw new Error(error.detail || `HTTP ${response.status}`);
+      const error = await response
+        .json()
+        .catch(() => ({ detail: response.statusText }));
+      const message =
+        error?.error?.message || error?.detail || `HTTP ${response.status}`;
+      throw new Error(message);
     }
 
     return response.json();
@@ -156,6 +160,30 @@ export class ApiClient {
     }>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
+    });
+
+    this.setAuth(response.access_token, response.user.role);
+    return {
+      token: response.access_token,
+      role: response.user.role,
+    };
+  }
+
+  /**
+   * Register
+   */
+  static async register(
+    email: string,
+    password: string,
+    role: string
+  ): Promise<{ token: string; role: string }> {
+    const response = await this.request<{
+      access_token: string;
+      token_type: string;
+      user: { role: string };
+    }>("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password, role }),
     });
 
     this.setAuth(response.access_token, response.user.role);

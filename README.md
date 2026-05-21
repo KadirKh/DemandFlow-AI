@@ -118,14 +118,13 @@ source venv/bin/activate   # On macOS/Linux
 
 # Install requirements (including Scikit-Learn, Pandas, FastAPI)
 pip install -r requirements.txt
-pip install email-validator # Required for credentials validation
 
 # Run local database schema creation and mock data seeder
 python -m app.utils.seed_data
 ```
 
 This seeds:
-1. **Users Registry**: Administrative, Planner, and Ops roles.
+1. **Users Registry**: Administrative role.
 2. **Products Registry**: Detailed retail SKUs across Electronics, Clothing, and Home categories.
 3. **Warehouses Master**: Geo-mapped distribution sites (Boston, Chicago, Oakland).
 4. **Historical Demand**: 6 months of daily order logs with seasonality, promos, and trend characteristics.
@@ -152,13 +151,11 @@ npm run dev
 
 ## 🔐 Credentials for Local Login
 
-Access the secure planner dashboard using any of these roles:
+Access the secure dashboard using this admin credential:
 
-| Role | Username / Email | Password |
+| Role | User ID | Password |
 | :--- | :--- | :--- |
-| **Supply Chain Planner** | `planner@demandflow.ai` | `plannerpassword` |
-| **Operations Manager** | `ops@demandflow.ai` | `opspassword` |
-| **Administrator** | `admin@demandflow.ai` | `adminpassword` |
+| **Administrator** | `admin` | `admin@123` |
 
 ---
 

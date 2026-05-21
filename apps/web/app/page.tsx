@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -20,7 +21,9 @@ import {
   Boxes, 
   LogOut, 
   User, 
-  Building2 
+  Building2,
+  Sun,
+  Moon
 } from "lucide-react";
 
 export default function Home() {
@@ -31,15 +34,32 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview"); // overview, forecasting, inventory, recommendations
   const [userRole, setUserRole] = useState("");
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     // Initialize API client and check if user is already authenticated
     ApiClient.initialize();
     if (ApiClient.isAuthenticated()) {
       setIsLoggedIn(true);
-      setUserRole(ApiClient.getRole() || "Planner");
+      setUserRole(ApiClient.getRole() || "Manufacturer");
+    }
+
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("df_theme");
+      const initialTheme = savedTheme === "dark" ? "dark" : "light";
+      setTheme(initialTheme);
+      document.documentElement.setAttribute("data-theme", initialTheme);
     }
   }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("df_theme", nextTheme);
+      document.documentElement.setAttribute("data-theme", nextTheme);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,13 +104,22 @@ export default function Home() {
             </p>
           </div>
 
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="absolute top-6 right-6 h-9 w-9 rounded-full border border-md-outline/20 bg-md-surface-container-low text-md-on-surface-variant flex items-center justify-center hover:bg-md-primary/10"
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="relative">
               <Input
                 id="email"
-                type="email"
-                label="Email Address"
-                placeholder="planner@demandflow.ai"
+                type="text"
+                label="User ID"
+                placeholder="admin"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -109,6 +138,7 @@ export default function Home() {
               />
             </div>
 
+
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-bold flex gap-2 items-center">
                 <Shield className="h-4 w-4 shrink-0" />
@@ -121,12 +151,13 @@ export default function Home() {
             </Button>
           </form>
 
-          {/* Quick instructions details */}
-          <div className="bg-md-surface-container-low border border-md-outline/10 p-3.5 rounded-2xl flex flex-col gap-1 text-[11px] text-md-on-surface-variant leading-relaxed">
-            <span className="font-bold text-md-on-background uppercase tracking-wider text-[9px]">Demo Access Credentials:</span>
-            <span>Planner: <code className="bg-white/50 px-1 py-0.5 rounded font-black text-md-primary">planner@demandflow.ai</code> / password: <code className="bg-white/50 px-1 py-0.5 rounded font-black text-md-primary">plannerpassword</code></span>
-            <span>Manager: <code className="bg-white/50 px-1 py-0.5 rounded font-black text-md-primary">ops@demandflow.ai</code> / password: <code className="bg-white/50 px-1 py-0.5 rounded font-black text-md-primary">opspassword</code></span>
+          <div className="text-[11px] text-md-on-surface-variant text-center">
+            Need an account?{" "}
+            <Link href="/signup" className="text-md-primary font-bold hover:underline">
+              Create one
+            </Link>
           </div>
+
         </Card>
       </main>
     );
@@ -206,10 +237,19 @@ export default function Home() {
               <User className="h-4.5 w-4.5 text-md-on-surface-variant" />
             </div>
             <div>
-              <div className="text-[11px] font-black text-md-on-background line-clamp-1">Planner Console</div>
+              <div className="text-[11px] font-black text-md-on-background line-clamp-1">Supply Console</div>
               <span className="text-[9px] uppercase font-bold tracking-wider text-md-primary capitalize">Role: {userRole}</span>
             </div>
           </div>
+
+          <Button
+            variant="outlined"
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-center gap-2 h-9 text-[11px] font-bold border-md-outline/30"
+          >
+            {theme === "dark" ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </Button>
 
           <Button 
             variant="outlined" 

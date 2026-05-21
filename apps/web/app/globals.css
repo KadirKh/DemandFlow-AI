@@ -34,6 +34,23 @@
   color: #1C1B1F;
 }
 
+:root[data-theme="dark"] {
+  --color-md-background: #111114;
+  --color-md-on-background: #ECE9F1;
+  --color-md-primary: #BFA5FF;
+  --color-md-on-primary: #24113D;
+  --color-md-secondary-container: #2D2438;
+  --color-md-on-secondary-container: #E8DEF8;
+  --color-md-tertiary: #D2A8B8;
+  --color-md-surface-container: #1A1A1F;
+  --color-md-surface-container-low: #22222A;
+  --color-md-outline: #8A8792;
+  --color-md-on-surface-variant: #C8C3CF;
+
+  background-color: #111114;
+  color: #ECE9F1;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-md-background);

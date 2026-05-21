@@ -19,9 +19,7 @@ def seed_db():
         
         # 1. Users
         users = [
-            User(email="admin@demandflow.ai", hashed_password=pwd_context.hash("adminpassword"), role="admin"),
-            User(email="planner@demandflow.ai", hashed_password=pwd_context.hash("plannerpassword"), role="planner"),
-            User(email="ops@demandflow.ai", hashed_password=pwd_context.hash("opspassword"), role="warehouse_manager")
+            User(email="admin", hashed_password=pwd_context.hash("admin@123"), role="admin")
         ]
         db.add_all(users)
         
