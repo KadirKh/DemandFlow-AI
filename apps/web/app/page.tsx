@@ -9,6 +9,7 @@ import DashboardTab from "../components/DashboardTab";
 import ForecastingTab from "../components/ForecastingTab";
 import InventoryTab from "../components/InventoryTab";
 import RecommendationsTab from "../components/RecommendationsTab";
+import { ApiClient } from "../lib/api-client";
 import { 
   Lock, 
   Mail, 
@@ -32,11 +33,11 @@ export default function Home() {
   const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("demandflow_token");
-    const role = localStorage.getItem("demandflow_role");
-    if (token) {
+    // Initialize API client and check if user is already authenticated
+    ApiClient.initialize();
+    if (ApiClient.isAuthenticated()) {
       setIsLoggedIn(true);
-      setUserRole(role || "Planner");
+      setUserRole(ApiClient.getRole() || "Planner");
     }
   }, []);
 
@@ -46,34 +47,24 @@ export default function Home() {
     setLoading(true);
     
     try {
-      const res = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-      
-      if (!res.ok) {
-        throw new Error("Invalid username or password");
-      }
-      
-      const data = await res.json();
-      localStorage.setItem("demandflow_token", data.token);
-      localStorage.setItem("demandflow_role", data.user.role);
-      setUserRole(data.user.role);
+      const { role } = await ApiClient.login(email, password);
+      setUserRole(role);
       setIsLoggedIn(true);
+      setEmail("");
+      setPassword("");
     } catch (err: any) {
-      setError(err.message || "Failed to connect to backend api.");
+      setError(err.message || "Failed to connect to backend API.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("demandflow_token");
-    localStorage.removeItem("demandflow_role");
+    ApiClient.clearAuth();
     setIsLoggedIn(false);
     setEmail("");
     setPassword("");
+    setUserRole("");
   };
 
   if (!isLoggedIn) {

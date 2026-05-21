@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import Button from "./ui/Button";
+import { ApiClient } from "../lib/api-client";
 import { 
   TrendingUp, 
   AlertTriangle, 
@@ -56,8 +57,7 @@ export default function DashboardTab({ onNavigateToTab }: { onNavigateToTab: (ta
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:8000/api/dashboard");
-      const json = await res.json();
+      const json = await ApiClient.get<DashboardData>("/api/dashboard");
       setData(json);
     } catch (err) {
       console.error("Error fetching dashboard:", err);

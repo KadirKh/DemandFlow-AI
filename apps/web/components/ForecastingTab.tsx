@@ -5,6 +5,7 @@ import Card from "./ui/Card";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
 import { RefreshCw, TrendingUp, Sliders, Calendar, Zap } from "lucide-react";
+import { ApiClient } from "../lib/api-client";
 import { 
   ComposedChart, 
   Line, 
@@ -79,11 +80,10 @@ export default function ForecastingTab() {
   const fetchProducts = async () => {
     try {
       setLoadingProducts(true);
-      const res = await fetch("http://localhost:8000/api/products");
-      const json = await res.json();
-      setProducts(json);
-      if (json.length > 0) {
-        setSelectedSku(json[0].sku_code);
+      const data = await ApiClient.get<ProductListItem[]>("/api/products");
+      setProducts(data);
+      if (data.length > 0) {
+        setSelectedSku(data[0].sku_code);
       }
     } catch (err) {
       console.error("Error loading products:", err);
@@ -95,9 +95,8 @@ export default function ForecastingTab() {
   const fetchProductDetails = async (sku: string) => {
     try {
       setLoadingDetails(true);
-      const res = await fetch(`http://localhost:8000/api/products/${sku}`);
-      const json = await res.json();
-      setDetails(json);
+      const data = await ApiClient.get<ProductDetails>(`/api/products/${sku}`);
+      setDetails(data);
     } catch (err) {
       console.error("Error loading product details:", err);
     } finally {
@@ -109,11 +108,7 @@ export default function ForecastingTab() {
     if (!selectedSku) return;
     try {
       setRetraining(true);
-      const res = await fetch(
-        `http://localhost:8000/api/products/${selectedSku}/forecast?warehouse_id=${selectedWarehouseId}`,
-        { method: "POST" }
-      );
-      await res.json();
+      await ApiClient.post(`/api/products/${selectedSku}/forecast?warehouse_id=${selectedWarehouseId}`, {});
       // Reload details to show updated forecasts
       await fetchProductDetails(selectedSku);
     } catch (err) {

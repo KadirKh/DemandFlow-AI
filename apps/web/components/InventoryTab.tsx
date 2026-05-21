@@ -5,6 +5,7 @@ import Card from "./ui/Card";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
 import { AlertCircle, CheckCircle2, ChevronRight, Edit3, RefreshCw, Warehouse } from "lucide-react";
+import { ApiClient } from "../lib/api-client";
 
 interface ProductInventoryItem {
   sku_code: string;
@@ -34,15 +35,23 @@ export default function InventoryTab() {
     try {
       setLoading(true);
       // Fetch products
-      const pRes = await fetch("http://localhost:8000/api/products");
-      const products = await pRes.json();
+      interface ProductItem {
+        id: number;
+        sku_code: string;
+        name: string;
+        category: string;
+      }
+      const products = await ApiClient.get<ProductItem[]>("/api/products");
       
       const allInventoryItems: ProductInventoryItem[] = [];
       
       // Fetch details for each product to collect warehouse-specific inventory states
+      interface ProductDetails {
+        product: { sku_code: string; name: string; category: string };
+        inventory: Array<{ warehouse_id: number; warehouse_name: string; city: string; on_hand: number; safety_stock: number; reorder_point: number; days_of_cover: number; status: string }>;
+      }
       for (const p of products) {
-        const dRes = await fetch(`http://localhost:8000/api/products/${p.sku_code}`);
-        const details = await dRes.json();
+        const details = await ApiClient.get<ProductDetails>(`/api/products/${p.sku_code}`);
         
         details.inventory.forEach((inv: any) => {
           allInventoryItems.push({

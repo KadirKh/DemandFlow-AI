@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import Button from "./ui/Button";
 import { CheckCircle2, XCircle, ArrowRight, ShieldAlert, Sparkles, RefreshCw } from "lucide-react";
+import { ApiClient } from "../lib/api-client";
 
 interface Recommendation {
   id: number;
@@ -27,9 +28,8 @@ export default function RecommendationsTab() {
   const fetchRecommendations = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:8000/api/recommendations");
-      const json = await res.json();
-      setRecommendations(json);
+      const data = await ApiClient.get<Recommendation[]>("/api/recommendations");
+      setRecommendations(data);
     } catch (err) {
       console.error("Error fetching recommendations:", err);
     } finally {
@@ -40,12 +40,7 @@ export default function RecommendationsTab() {
   const handleAction = async (id: number, action: "approved" | "rejected") => {
     try {
       setActioningId(id);
-      const res = await fetch(`http://localhost:8000/api/recommendations/${id}/action`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action })
-      });
-      await res.json();
+      await ApiClient.post(`/api/recommendations/${id}/action`, { action });
       
       // Update recommendation status locally
       setRecommendations(prev =>
