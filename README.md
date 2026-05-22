@@ -43,7 +43,7 @@ The platform goes beyond generic supply chain tools by replacing irrelevant West
 | 2 | Khatri Abdul Kadir | [@KadirKh](https://github.com/KadirKh) |
 | 3 | Govind Sankhala | [@govindsankla90](https://github.com/govindsankla90) |
 | 4 | Manikant Kumar | [@manikantbindass](https://github.com/manikantbindass) |
-| 5 | D. Kasim Basha | — |
+| 5 | Kasim Basha | — |
 
 **Bachelor of Technology — Computer Science & Engineering**
 
