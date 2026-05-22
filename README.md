@@ -1,185 +1,263 @@
-# DemandFlow AI 📦🤖
+<div align="center">
+  <img src="docs/banner.svg" alt="DemandFlow AI Banner" width="100%" />
 
-> **AI-Based Demand & Supply Management System**  
-> An enterprise-grade, full-stack predictive workflow optimizing product demand forecasting, inventory safety margins, warehouse logistics, and real-time replenishment lane balancing.
+  <p align="center">
+    <samp>
+      <b>Autonomous Supply Chain Forecasting & Inventory Balancing Engine</b>
+    </samp>
+  </p>
+
+  <p align="center">
+    <a href="#-english">🇺🇸 English</a> • 
+    <a href="#-తెలుగు-telugu">🇮🇳 తెలుగు (Telugu)</a> • 
+    <a href="#-français-french">🇫🇷 Français (French)</a>
+  </p>
+
+  <p align="center">
+    <img src="https://img.shields.io/badge/Next.js-16.2-blueviolet?style=for-the-badge&logo=nextdotjs" alt="Next.js" />
+    <img src="https://img.shields.io/badge/FastAPI-0.110-emerald?style=for-the-badge&logo=fastapi" alt="FastAPI" />
+    <img src="https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&logo=python" alt="Python" />
+    <img src="https://img.shields.io/badge/SQLite-3-lightblue?style=for-the-badge&logo=sqlite" alt="SQLite" />
+  </p>
+</div>
 
 ---
+
+# 🇺🇸 English
 
 ## 🚀 Project Overview
-
-DemandFlow AI addresses critical real-world supply chain challenges:
-* **Overstocking** which drives storage costs and inventory depreciation.
-* **Understocking & Stockouts** causing revenue loss and missed customer orders.
-* **Logistics Bottlenecks** due to inefficient transfer lanes and manual route planning.
-
-The platform combines **Time-Series Machine Learning (Scikit-Learn Linear Regression)**, **Inventory Balancing Algorithms (Safety Stock / Reorder Point ROP)**, and a **Next.js & Tailwind CSS v4 Console** designed in accordance with **Material Design 3 (Material You)** aesthetics.
+DemandFlow AI is an enterprise-grade demand forecasting and inventory replenishment lane optimizer. It solves real-world supply chain inefficiencies:
+* **Overstocking Prevention**: Reduces costly warehousing overheads.
+* **Stockout Protection**: Avoids missed retail orders.
+* **Autonomous Intelligence**: Automates replenishment recommendations based on dynamic ROP (Reorder Point) formulas.
 
 ---
 
-## 🎨 Design System: Material Design 3
+## 🛠️ System Architecture
 
-The frontend console has been custom-crafted using curated color palettes, tonal surfaces, and micro-animations representing the Material Design 3 guidelines:
-* **Wallpaper Color Wash**: Organic backdrop glows using dynamic radial blur shapes (`GlowOverlay.tsx`).
-* **Interactive Tonal Containers**: Deep purple primary (`#6750A4`) and secondary lavender tonal states (`#E8DEF8`) responsive to hovering and active touch scaling.
-* **Tactile Buttons**: Pill-shaped action triggers with fluid easing curves (`cubic-bezier(0.2, 0, 0, 1)`).
-
----
-
-## 🛠️ High-Level System Architecture
-
-```text
-Sales + Weather + Promo Events
-              │
-              ▼
-   ┌────────────────────┐
-   │    Data Pipeline   │
-   └──────────┬─────────┘
-              │
-              ▼
- ┌────────────────────────┐
- │Demand Forecasting Engine│ (Linear Regression v1, Confidence Bounds 95%)
- └────────────┬───────────┘
-              │
-              ▼
- ┌────────────────────────┐
- │Inventory Optimizer Engine│ (Safety Stock, ROP, Transfer Recommender)
- └────────────┬───────────┘
-              │
-              ▼
- ┌────────────────────────┐
- │Recommendation Scoring  │ (Decision Inbox, Ranked Opportunity Scoring)
- └────────────┬───────────┘
-              │
-              ▼
- ┌────────────────────────┐
- │  Next.js Console Web   │ (Dashboard, Live SKU Graphs, Inventory Matrix)
- └────────────────────────┘
-```
-
----
-
-## 📦 Directory Structure
-
-```text
-DemandFlow-AI/
-├── apps/
-│   ├── backend/                # FastAPI Core Engine (Python 3.13)
-│   │   ├── app/
-│   │   │   ├── database.py     # DB Engine & SQLite / Fallback Setup
-│   │   │   ├── models.py       # User, Product, Inventory, Order models
-│   │   │   ├── routers/        # Auth, Dashboard, Products, Recommendations
-│   │   │   ├── services/       # Forecaster & Inventory safety stock logic
-│   │   │   └── utils/          # Seeder script
-│   │   └── requirements.txt
-│   └── web/                    # Next.js Frontend Console
-│       ├── app/                # App Router (globals.css, layout.tsx, page.tsx)
-│       ├── components/         # Tab modules (Dashboard, Forecasting, Inventory)
-│       └── components/ui/      # Base Material Design 3 UI controls
-├── docker-compose.yml          # Container configuration for external databases
-├── package.json                # Monorepo execution scripts (Concurrently)
-└── README.md                   # System Documentation
+```mermaid
+graph TD
+    A[Next.js Tonal UI] -->|REST API Requests| B[FastAPI Engine]
+    B -->|SQLAlchemy| C[SQLite Database]
+    B -->|Time-Series Lags| D[Scikit-Learn ML]
+    B -->|ROP Calculations| E[Safety Stock Optimizer]
 ```
 
 ---
 
 ## 🎛️ Technology Stack
 
-| Layer | Component | Description |
+| Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | React 19, Next.js v16, Tailwind CSS v4 | Responsive layout with Material Design 3 tokens and Recharts visualization |
-| **Backend** | FastAPI, Uvicorn | High-performance Python async routing with Swagger UI documentation |
-| **Database** | SQLite, SQLAlchemy | Modular ORM setup with fallback config |
-| **Analytics** | Pandas, Scikit-Learn | Time-series features (Rolling means, Lags) and Linear Regression models |
-| **Process Control** | Concurrently | Single script monorepo orchestration |
+| **Frontend** | React 19, Next.js 16, Tailwind CSS v4 | Material Design 3 interface, Responsive layout, Recharts data visualization |
+| **Backend** | FastAPI (Python), Uvicorn | High-performance asynchronous API, Swagger docs |
+| **Database** | SQLite, SQLAlchemy | Modular schema configuration and seed utilities |
+| **Analytics** | Scikit-Learn, Pandas | Time-series forecasting regression and inventory mathematics |
+
+---
+
+## 📚 Project Documentation
+Access technical manuals and implementation resources inside the [documents/](docs/) directory:
+* [User Guide & Workflow Manual](docs/user_guide.md)
+* [Technical Implementation Plan](docs/implementation_plan.md)
+
+---
+
+## 🖥️ User Interface Preview
+Below is a high-fidelity preview of the modern Material Design 3 forecasting dashboard:
+<img src="docs/dashboard_preview.png" alt="DemandFlow AI Dashboard Preview" width="100%" style="border-radius: 16px; margin: 16px 0;" />
 
 ---
 
 ## 🔑 Getting Started Locally
 
-### Prerequisites
-* **Node.js** (v18+)
-* **Python** (v3.10+)
+### 1. Prerequisites
+- **Node.js** (v18+)
+- **Python** (v3.10+)
 
-### 1. Repository Setup & Install Dependencies
-Clone the repository and install root package orchestration utilities:
+### 2. Dependency Setup
+```bash
+# Clone & install root package orchestrator
+git clone https://github.com/KadirKh/DemandFlow-AI.git
+cd DemandFlow-AI
+npm install
+```
+
+### 3. Backend & DB Seeding
+```bash
+cd apps/backend
+python -m venv venv
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # macOS/Linux
+
+pip install -r requirements.txt
+python -m app.utils.seed_data
+```
+
+### 4. Running Dev Environment
+```bash
+# From project root
+npm run dev
+```
+- **Frontend Dashboard**: [http://localhost:3001](http://localhost:3001)
+- **Backend API**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+# 🇮🇳 తెలుగు (Telugu)
+
+## 🚀 ప్రాజెక్ట్ అవలోకనం
+డిమాండ్ ఫ్లో AI అనేది అధునాతన డిమాండ్ అంచనా మరియు ఇన్వెంటరీ నింపే లేన్ ఆప్టిమైజర్. ఇది రిటైల్ పరిశ్రమలో నిజ-సమయ సమస్యలను పరిష్కరిస్తుంది:
+* **అధిక స్టాక్ నివారణ (Overstocking)**: నిల్వ నిర్వహణ ఖర్చులను తగ్గిస్తుంది.
+* **కొరత నివారణ (Stockouts)**: ఆర్డర్‌లను కోల్పోకుండా చూస్తుంది.
+* **స్వయంప్రతిపత్తి (Autonomous)**: డైనమిక్ ROP ఆధారంగా స్టాక్ నింపే సిఫార్సులను ఆటోమేట్ చేస్తుంది.
+
+---
+
+## 🛠️ సిస్టమ్ ఆర్కిటెక్చర్
+
+```mermaid
+graph TD
+    A[నెక్స్ట్ జెఎస్ UI] -->|REST API అభ్యర్థనలు| B[ఫాస్ట్ ఏపీఐ ఇంజిన్]
+    B -->|SQLAlchemy| C[ఎస్ క్యూ లైట్ డేటాబేస్]
+    B -->|టైమ్-సిరీస్| D[మెషిన్ లెర్నింగ్]
+    B -->|ROP లెక్కలు| E[ఇన్వెంటరీ ఆప్టిమైజర్]
+```
+
+---
+
+## 🎛️ సాంకేతిక వివరాలు (Technology Stack)
+
+| పొర (Layer) | సాంకేతికత (Technology) | ఉద్దేశం (Purpose) |
+| :--- | :--- | :--- |
+| **ఫ్రంటెండ్** | React 19, Next.js 16, Tailwind v4 | మెటీరియల్ డిజైన్ 3 ఇంటర్‌ఫేస్, రీచార్ట్స్ విజువలైజేషన్ |
+| **బ్యాకెండ్** | FastAPI (Python), Uvicorn | వేగవంతమైన అసమకాలిక API సేవలు |
+| **డేటాబేస్** | SQLite, SQLAlchemy | మోడ్యులర్ స్కీమా కాన్ఫిగరేషన్ మరియు సీడింగ్ |
+| **విశ్లేషణ** | Scikit-Learn, Pandas | డిమాండ్ అంచనాలు మరియు ఇన్వెంటరీ గణిత శాస్త్రం |
+
+---
+
+## 📚 ప్రాజెక్ట్ పత్రాలు
+[documents/](docs/) ఫోల్డర్‌లో అందుబాటులో ఉన్న సాంకేతిక మరియు వినియోగదారు మాన్యువల్స్:
+* [వినియోగదారు గైడ్ & వర్క్‌ఫ్లో మాన్యువల్](docs/user_guide.md)
+* [సాంకేతిక అమలు ప్రణాళిక](docs/implementation_plan.md)
+
+---
+
+## 🖥️ యూజర్ ఇంటర్‌ఫేస్ ప్రివ్యూ
+ఆధునిక మెటీరియల్ డిజైన్ 3 డాష్‌బోర్డ్ ఇంటర్‌ఫేస్ యొక్క ప్రివ్యూ కింద ఇవ్వబడింది:
+<img src="docs/dashboard_preview.png" alt="DemandFlow AI Dashboard Preview" width="100%" style="border-radius: 16px; margin: 16px 0;" />
+
+---
+
+## 🔑 లోకల్ సెటప్ విధానం
+
+### 1. అవసరమైనవి
+- **Node.js** (v18+)
+- **Python** (v3.10+)
+
+### 2. డిపెండెన్సీ ఇన్‌స్టాలేషన్
 ```bash
 git clone https://github.com/KadirKh/DemandFlow-AI.git
 cd DemandFlow-AI
 npm install
 ```
 
-### 2. Configure Python Backend & Database Seeding
-Navigate to the backend app, initialize a virtual environment, and install libraries:
+### 3. బ్యాకెండ్ & డేటాబేస్ సీడింగ్
 ```bash
 cd apps/backend
 python -m venv venv
-venv\Scripts\activate      # On Windows
-source venv/bin/activate   # On macOS/Linux
+venv\Scripts\activate      # Windows కొరకు
+source venv/bin/activate   # macOS/Linux కొరకు
 
-# Install requirements (including Scikit-Learn, Pandas, FastAPI)
 pip install -r requirements.txt
-
-# Run local database schema creation and mock data seeder
 python -m app.utils.seed_data
 ```
 
-This seeds:
-1. **Users Registry**: Administrative role.
-2. **Products Registry**: Detailed retail SKUs across Electronics, Clothing, and Home categories.
-3. **Warehouses Master**: Geo-mapped distribution sites (Boston, Chicago, Oakland).
-4. **Historical Demand**: 6 months of daily order logs with seasonality, promos, and trend characteristics.
-5. **AI Forecast Engine**: Pre-calculated 30-day baseline time-series forecasts.
-
-### 3. Configure Frontend Web Dependencies
-Navigate to the web dashboard directory and install package requirements:
+### 4. రన్ చేయడం ఎలా
 ```bash
-cd ../web
+# ప్రాజెక్ట్ రూట్ ఫోల్డర్ నుండి
+npm run dev
+```
+- **ఫ్రంటెండ్ డాష్‌బోర్డ్**: [http://localhost:3001](http://localhost:3001)
+- **బ్యాకెండ్ ఏపీఐ**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+# 🇫🇷 Français (French)
+
+## 🚀 Aperçu du Projet
+DemandFlow AI est un système de prévision de la demande et d'optimisation de la chaîne d'approvisionnement de classe entreprise. Il résout les inefficacités opérationnelles majeures :
+* **Prévention du Surstockage**: Réduit les coûts d'entreposage excessifs.
+* **Protection contre les Ruptures**: Évite les commandes manquées.
+* **Décisions Autonomes**: Automatise les recommandations d'approvisionnement basées sur des équations ROP dynamiques.
+
+---
+
+## 🛠️ Architecture du Système
+
+```mermaid
+graph TD
+    A[Next.js Tonal UI] -->|Requêtes REST API| B[FastAPI Engine]
+    B -->|SQLAlchemy| C[Base de Données SQLite]
+    B -->|Séries Temporelles| D[Scikit-Learn ML]
+    B -->|Calculs ROP| E[Optimiseur de Stock]
+```
+
+---
+
+## 🎛️ Pile Technique
+
+| Couche | Technologie | Rôle |
+| :--- | :--- | :--- |
+| **Frontend** | React 19, Next.js 16, Tailwind CSS v4 | Interface Material Design 3 épurée, Visualisation Recharts |
+| **Backend** | FastAPI, Uvicorn | Routage asynchrone ultra-rapide |
+| **Database** | SQLite, SQLAlchemy | Configuration modulaire des schémas et utilitaires de peuplement |
+| **Analytics** | Scikit-Learn, Pandas | Prévisions de séries temporelles et mathématiques de stock |
+
+---
+
+## 📚 Documentation du Projet
+Accédez aux manuels techniques et guides d'utilisation dans le répertoire [documents/](docs/) :
+* [Guide d'Utilisation & Manuel Opérationnel](docs/user_guide.md)
+* [Plan d'Implémentation Technique](docs/implementation_plan.md)
+
+---
+
+## 🖥️ Aperçu de l'Interface Utilisateur
+Voici un aperçu haute fidélité du tableau de bord moderne et interactif développé sous Material Design 3 :
+<img src="docs/dashboard_preview.png" alt="DemandFlow AI Dashboard Preview" width="100%" style="border-radius: 16px; margin: 16px 0;" />
+
+---
+
+## 🔑 Démarrage Local
+
+### 1. Prérequis
+- **Node.js** (v18+)
+- **Python** (v3.10+)
+
+### 2. Dépendances
+```bash
+git clone https://github.com/KadirKh/DemandFlow-AI.git
+cd DemandFlow-AI
 npm install
 ```
 
-### 4. Run Both Servers Concurrently
-Run the development monorepo start command from the project root:
+### 3. Backend & Base de Données
 ```bash
-cd ../../
-npm run dev
+cd apps/backend
+python -m venv venv
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # macOS/Linux
+
+pip install -r requirements.txt
+python -m app.utils.seed_data
 ```
 
-* **Frontend Dashboard**: [http://localhost:3000](http://localhost:3000)
-* **Backend API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
-
----
-
-## 🔐 Credentials for Local Login
-
-Access the secure dashboard using this admin credential:
-
-| Role | User ID | Password |
-| :--- | :--- | :--- |
-| **Administrator** | `admin` | `admin@123` |
-
----
-
-## 📅 Roadmap
-
-### Phase 1 – MVP 🚀 (Complete)
-* Monorepo directory scaffold with Next.js App Router and FastAPI.
-* SQLite Database schema modeling and comprehensive data seeder.
-* Baseline Linear Regression engine calculating 30-day predictions with confidence interval bounds.
-* Interactive Material Design 3 Web Console.
-
-### Phase 2 – Inventory Intelligence 🧠 (Complete)
-* Safety Stock & Reorder Point (ROP) calculation formulas.
-* Interactive inventory grid highlighting stockout and low-stock alerts.
-* Opportunity-Scored Decision inbox to approve or reject replenishment suggestions.
-
-### Phase 3 – Logistics Optimization 🚚 (Planned)
-* Dijkstra pathfinding algorithms for multi-point freight shipping lanes.
-* Carbon-footprint tracking per transfer lane.
-
-### Phase 4 – Real-Time Streaming 📡 (Planned)
-* Apache Kafka event streaming to feed live order updates and immediate stock level refreshes.
-* Redis caching layers for quick dashboard KPI queries.
-
-### Phase 5 – Autonomous AI Agents 🤖 (Planned)
-* Reinforcement Learning (RL) agents for automated warehouse balancing.
-* Agentic tool calls to automatically execute restock lane balances upon approval.
+### 4. Démarrage des Serveurs
+```bash
+# Depuis la racine du projet
+npm run dev
+```
+- **Console Frontend**: [http://localhost:3001](http://localhost:3001)
+- **API FastAPI**: [http://localhost:8000/docs](http://localhost:8000/docs)
