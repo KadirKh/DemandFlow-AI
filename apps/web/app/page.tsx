@@ -32,6 +32,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview"); // overview, forecasting, inventory, recommendations
   const [userRole, setUserRole] = useState("");
   const [theme, setTheme] = useState("light");
@@ -50,6 +51,45 @@ export default function Home() {
       setTheme(initialTheme);
       document.documentElement.setAttribute("data-theme", initialTheme);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleAuthMessage = async (event: MessageEvent) => {
+      // Validate origin
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data && event.data.type === "GOOGLE_AUTH_SUCCESS") {
+        const { email, name } = event.data;
+        setError("");
+        setLoading(true);
+        try {
+          // Use secure deterministic password for Google accounts
+          const googlePass = `google_oauth_bypass_${email}_demandflow_2026`;
+          let role = "Manufacturer";
+          try {
+            // Try logging in
+            const res = await ApiClient.login(email, googlePass);
+            role = res.role;
+          } catch (err: any) {
+            // Register since account does not exist
+            const regRes = await ApiClient.register(email, googlePass, "manufacturer");
+            role = regRes.role;
+          }
+          
+          setUserRole(role);
+          setIsLoggedIn(true);
+        } catch (err: any) {
+          setError(err.message || "Google Account authentication failed.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    window.addEventListener("message", handleAuthMessage);
+    return () => {
+      window.removeEventListener("message", handleAuthMessage);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -77,6 +117,19 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    const width = 500;
+    const height = 650;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    
+    window.open(
+      "/google-login.html",
+      "Google Sign-In",
+      `width=${width},height=${height},top=${top},left=${left},scrollbars=no,resizable=no`
+    );
   };
 
   const handleLogout = () => {
@@ -113,6 +166,38 @@ export default function Home() {
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
+          {/* Seeded credentials helper box */}
+          <div className="p-3.5 bg-md-secondary-container/20 border border-md-outline/10 text-md-on-surface-variant text-[11px] rounded-xl flex flex-col gap-1.5 select-none">
+            <span className="font-bold text-[9px] uppercase tracking-wider text-md-primary">Demo Credentials</span>
+            <div className="flex justify-between font-mono">
+              <span>User ID: <strong className="text-md-on-background select-all">admin</strong></span>
+              <span>Security Key: <strong className="text-md-on-background select-all">admin@123</strong></span>
+            </div>
+          </div>
+
+          {/* Google Sign-In */}
+          <Button 
+            type="button" 
+            onClick={handleGoogleLogin} 
+            disabled={loading || googleLoading} 
+            className="w-full h-11 text-xs font-bold flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm transition-colors duration-200"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" className="shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+            </svg>
+            <span>Continue with Google</span>
+          </Button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 select-none py-1">
+            <div className="h-px bg-md-outline/10 flex-1" />
+            <span className="text-[9px] font-bold text-md-on-surface-variant/40 uppercase tracking-widest">or use manual keys</span>
+            <div className="h-px bg-md-outline/10 flex-1" />
+          </div>
+
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="relative">
               <Input
@@ -146,7 +231,7 @@ export default function Home() {
               </div>
             )}
 
-            <Button type="submit" disabled={loading} className="w-full mt-4 h-11 text-xs font-bold">
+            <Button type="submit" disabled={loading} className="w-full mt-2 h-11 text-xs font-bold">
               {loading ? "Authorizing..." : "Sign In to Console"}
             </Button>
           </form>

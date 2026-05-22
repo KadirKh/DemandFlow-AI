@@ -142,7 +142,7 @@ export default function DashboardTab({ onNavigateToTab }: { onNavigateToTab: (ta
             <p className="text-xs text-md-on-surface-variant">Combined historical sales vs next 30 days regression prediction.</p>
           </div>
           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" h="100%">
+            <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.demand_trend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="actualGrad" x1="0" y1="0" x2="0" y2="1">

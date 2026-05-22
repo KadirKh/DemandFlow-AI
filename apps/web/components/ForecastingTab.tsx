@@ -42,6 +42,7 @@ interface ProductDetails {
     on_hand: number;
     safety_stock: number;
     reorder_point: number;
+    status?: string;
   }>;
   sales_history: Array<{
     date: string;
@@ -275,7 +276,7 @@ export default function ForecastingTab() {
                       No sales history or forecast generated for this warehouse.
                     </div>
                   ) : (
-                    <ResponsiveContainer width="100%" h="100%">
+                    <ResponsiveContainer width="100%" height="100%">
                       <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E7E0EC" />
                         <XAxis 

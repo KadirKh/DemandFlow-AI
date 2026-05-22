@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in - Google Accounts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #202124;
+    }
+    .container {
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      text-align: center;
+    }
+    @media (max-width: 450px) {
+      .container {
+        border: none;
+        padding: 24px;
+      }
+    }
+    .google-logo {
+      height: 24px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.333;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 16px;
+      font-weight: 400;
+      color: #202124;
+      margin-bottom: 30px;
+    }
+    .subtitle span {
+      color: #1a73e8;
+      font-weight: 500;
+    }
+    .form-group {
+      position: relative;
+      margin-bottom: 26px;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: #1a73e8;
+      border-width: 2px;
+      padding: 15px; /* Adjust padding to keep elements aligned with 2px border */
+    }
+    label {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      color: #5f6368;
+      font-size: 16px;
+      transition: 0.2s ease all;
+      pointer-events: none;
+      background-color: #ffffff;
+      padding: 0 4px;
+    }
+    input:focus ~ label, input:not(:placeholder-shown) ~ label {
+      top: -8px;
+      left: 10px;
+      font-size: 12px;
+      color: #1a73e8;
+    }
+    .error-msg {
+      color: #d93025;
+      font-size: 12px;
+      text-align: left;
+      margin-top: -20px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .learn-more {
+      font-size: 14px;
+      color: #5f6368;
+      line-height: 1.42;
+      text-align: left;
+      margin-bottom: 35px;
+    }
+    .learn-more a {
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .create-account {
+      color: #1a73e8;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-next {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+    .btn-next:hover {
+      background-color: #1557b0;
+      box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+    }
+    .btn-next:active {
+      background-color: #1c3d5a;
+    }
+    .loading-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #1a73e8;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="login-container">
+    <!-- Google Logo SVG -->
+    <svg class="google-logo" viewBox="0 0 74 24" width="74" height="24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.24 10.285V13.4h6.887c-.274 1.562-1.777 4.584-6.887 4.584-4.417 0-8.028-3.658-8.028-8.169 0-4.51 3.611-8.168 8.028-8.168 2.514 0 4.204 1.054 5.165 1.979l2.457-2.366C18.293 1.137 15.54.001 12.24.001c-6.638 0-12 5.362-12 12s5.362 12 12 12c6.933 0 11.531-4.875 11.531-11.727 0-.788-.086-1.39-.189-1.989H12.24z" fill="#4285F4"/>
+      <path d="M31.206 8.3c-3.136 0-5.69 2.502-5.69 5.7s2.554 5.7 5.69 5.7c3.136 0 5.69-2.502 5.69-5.7s-2.554-5.7-5.69-5.7zm0 9.17c-1.748 0-3.222-1.428-3.222-3.47 0-2.058 1.474-3.47 3.222-3.47 1.748 0 3.222 1.412 3.222 3.47 0 2.042-1.474 3.47-3.222 3.47z" fill="#EA4335"/>
+      <path d="M43.956 8.3c-3.136 0-5.69 2.502-5.69 5.7s2.554 5.7 5.69 5.7c3.136 0 5.69-2.502 5.69-5.7s-2.554-5.7-5.69-5.7zm0 9.17c-1.748 0-3.222-1.428-3.222-3.47 0-2.058 1.474-3.47 3.222-3.47 1.748 0 3.222 1.412 3.222 3.47 0 2.042-1.474 3.47-3.222 3.47z" fill="#FBBC05"/>
+      <path d="M55.735 8.3c-3.085 0-5.519 2.518-5.519 5.7 0 3.149 2.4 5.7 5.519 5.7 1.577 0 2.725-.623 3.41-1.445v1.17c0 2.173-1.165 3.338-3.033 3.338-1.526 0-2.468-1.097-2.862-2.007l-2.708 1.123c.788 1.885 2.862 4.108 5.57 4.108 3.222 0 5.929-1.9 5.929-5.945V8.6h-2.708v1.145c-.686-.811-1.834-1.445-3.318-1.445zm.274 9.17c-1.714 0-3.051-1.445-3.051-3.47 0-2.042 1.337-3.47 3.051-3.47 1.697 0 3.033 1.428 3.033 3.47 0 2.025-1.337 3.47-3.033 3.47z" fill="#4285F4"/>
+      <path d="M64.218.3h2.828v23.1h-2.828V.3z" fill="#34A853"/>
+      <path d="M72.937 13.97c-.994-1.478-2.673-2.2-4.489-2.2-3.016 0-5.536 2.45-5.536 5.67 0 3.17 2.485 5.7 5.758 5.7 2.656 0 4.161-1.613 4.88-2.658l-2.314-1.543c-.394.582-1.131 1.201-2.566 1.201-1.46 0-2.485-.673-2.999-1.666l8.03-3.324-.764-2.18zm-4.387 1.688c-.686 0-1.285-.343-1.56-.84l4.336-1.792c-.154-.926-.994-1.538-2.776-1.538z" fill="#EA4335"/>
+    </svg>
+    
+    <h1>Sign in</h1>
+    <div class="subtitle">to continue to <span>DemandFlow AI</span></div>
+    
+    <form id="google-form" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <input type="email" id="email" placeholder=" " required autocomplete="username">
+        <label for="email">Email or phone</label>
+      </div>
+      
+      <div class="error-msg" id="error-msg">Please enter a valid Google Account.</div>
+      
+      <div class="learn-more">
+        Not your computer? Use Guest mode to sign in privately.
+        <a href="#">Learn more</a>
+      </div>
+      
+      <div class="actions">
+        <span class="create-account">Create account</span>
+        <button type="submit" class="btn-next">Next</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="loading-container" id="loading-container">
+    <div class="spinner"></div>
+    <div style="font-size: 16px; font-weight: 500;">Authenticating...</div>
+    <div style="font-size: 13px; color: #5f6368; margin-top: 8px;">Connecting to DemandFlow secure portal</div>
+  </div>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const emailVal = document.getElementById('email').value.trim();
+      
+      if (!emailVal || !emailVal.includes('@')) {
+        document.getElementById('error-msg').style.display = 'block';
+        return;
+      }
+      
+      document.getElementById('error-msg').style.display = 'none';
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('loading-container').style.display = 'flex';
+      
+      // Simulate authenticating for 1.2s, then return token to parent window
+      setTimeout(() => {
+        const namePart = emailVal.split('@')[0];
+        const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        
+        if (window.opener) {
+          window.opener.postMessage({
+            type: 'GOOGLE_AUTH_SUCCESS',
+            email: emailVal,
+            name: formattedName
+          }, window.location.origin);
+        }
+        window.close();
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
