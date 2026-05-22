@@ -789,18 +789,18 @@ export default function DashboardPage() {
 
             {/* THE LONG GRAPH - Full-Width Interactive Chart */}
             <Card className="flex flex-col gap-4">
-              <div className="flex justify-between items-start">
+              <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                 <div>
-                  <h3 className="text-sm font-black text-md-on-background uppercase tracking-tight">30-Day Long-Range Simulation Timeline</h3>
-                  <p className="text-xs text-md-on-surface-variant mt-0.5">
-                    Continuous evaluation of Distributor Unsold Stock versus Safety Buffers and machinery energy footprint metrics.
+                  <h3 className="text-sm font-black text-md-on-background uppercase tracking-tight">30-Day Factory (Agra Karkhana) to Wholesaler (Godown) Timeline</h3>
+                  <p className="text-xs text-md-on-surface-variant mt-0.5 leading-relaxed">
+                    Simple visual timeline of how the Agra shoe karkhana (factory) halts or restarts machines based on Mumbai/Delhi wholesaler stock levels to save coal & electricity.
                   </p>
                 </div>
-                <div className="flex gap-4 text-[10px] font-bold text-md-on-surface-variant">
-                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-blue-500"></span> Distributor Stock</span>
-                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-purple-500"></span> Customer Demand</span>
-                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-red-400"></span> Fuel Burn (Gal)</span>
-                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-dashed border border-amber-600"></span> Safety stock Buffer</span>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-bold text-md-on-surface-variant shrink-0">
+                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-blue-500"></span> Wholesaler Godown Unsold Stock</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-purple-500"></span> Retail Shop Orders (Demand)</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-red-400"></span> Karkhana Fuel Burn (Coal/Electricity)</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-dashed border border-amber-600"></span> Safe Backup Stock (Safety Buffer)</span>
                 </div>
               </div>
 
@@ -818,14 +818,14 @@ export default function DashboardPage() {
                       yAxisId="stock"
                       tick={{ fill: "#49454F", fontSize: 10 }} 
                       stroke="#79747E" 
-                      label={{ value: 'Units Count', angle: -90, position: 'insideLeft', style: {fontSize: '9px', fill: '#49454F'} }}
+                      label={{ value: 'Stock Count (Shoes)', angle: -90, position: 'insideLeft', style: {fontSize: '9px', fill: '#49454F'} }}
                     />
                     <YAxis 
                       yAxisId="fuel"
                       orientation="right"
                       tick={{ fill: "#b91c1c", fontSize: 10 }} 
                       stroke="#ef4444" 
-                      label={{ value: 'Fuel Burn (Gallons)', angle: 90, position: 'insideRight', style: {fontSize: '9px', fill: '#b91c1c'} }}
+                      label={{ value: 'Karkhana Fuel Consumption (Units)', angle: 90, position: 'insideRight', style: {fontSize: '9px', fill: '#b91c1c'} }}
                     />
                     <Tooltip 
                       contentStyle={{ 
@@ -837,10 +837,10 @@ export default function DashboardPage() {
                       }}
                     />
                     
-                    {/* Area for Distributor Stock levels */}
+                    {/* Area for Wholesaler Stock levels */}
                     <Area 
                       yAxisId="stock"
-                      name="Distributor Stock"
+                      name="Wholesaler Godown Unsold Stock"
                       type="monotone"
                       dataKey="Distributor Stock"
                       fill="#e0f2fe"
@@ -852,7 +852,7 @@ export default function DashboardPage() {
                     {/* Customer demand curve */}
                     <Line 
                       yAxisId="stock"
-                      name="Customer Orders"
+                      name="Retail Shop Orders (Customer Demand)"
                       type="monotone"
                       dataKey="Customer Orders"
                       stroke="#a855f7"
@@ -863,7 +863,7 @@ export default function DashboardPage() {
                     {/* Fuel Consumption curve */}
                     <Line 
                       yAxisId="fuel"
-                      name="Machinery Fuel Burn (Gal)"
+                      name="Factory Energy Consumption (Coal/Electricity)"
                       type="monotone"
                       dataKey="Machinery Fuel Burn (Gal)"
                       stroke="#f87171"
@@ -875,7 +875,7 @@ export default function DashboardPage() {
                     {/* Target Safety Stock line */}
                     <Line 
                       yAxisId="stock"
-                      name="Holding Safety Buffer"
+                      name="Minimum Safe Backup Stock (Safety Buffer)"
                       type="monotone"
                       dataKey="Holding Safety Buffer"
                       stroke="#d97706"
@@ -903,7 +903,7 @@ export default function DashboardPage() {
                       : "text-md-on-surface-variant hover:bg-md-surface-container-low"
                   }`}
                 >
-                  1. Safety Stock Buffer
+                  1. Emergency Backup Stock
                 </button>
 
                 <button
@@ -914,7 +914,7 @@ export default function DashboardPage() {
                       : "text-md-on-surface-variant hover:bg-md-surface-container-low"
                   }`}
                 >
-                  2. Reorder Point (ROP)
+                  2. Reorder Point (ROP Limit)
                 </button>
 
                 <button
@@ -925,7 +925,7 @@ export default function DashboardPage() {
                       : "text-md-on-surface-variant hover:bg-md-surface-container-low"
                   }`}
                 >
-                  3. Gas Burn Throttling
+                  3. Karkhana Energy Saving
                 </button>
 
                 <button
@@ -936,7 +936,7 @@ export default function DashboardPage() {
                       : "text-md-on-surface-variant hover:bg-md-surface-container-low"
                   }`}
                 >
-                  4. Spatial Transfers
+                  4. Inter-City Stock Shifting
                 </button>
               </Card>
 
@@ -944,52 +944,52 @@ export default function DashboardPage() {
               <Card className="lg:col-span-3 flex flex-col justify-between p-6">
                 {glossaryActiveTab === "safety" && (
                   <div className="flex flex-col gap-3 animate-fade-in">
-                    <span className="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full self-start">Safety stock buffer</span>
-                    <h3 className="text-base font-black text-md-on-background">What is Safety Stock & Safety Stock Buffers?</h3>
+                    <span className="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full self-start">Emergency Backup Stock</span>
+                    <h3 className="text-base font-black text-md-on-background">What is Safety Stock (Bachat Stock / Backup Stock)?</h3>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      Safety Stock is a level of extra stock that is kept to mitigate risk of stockouts (running out of raw components or completed products) due to uncertainties in supply and demand. 
+                      <strong>Safety Stock</strong> is the emergency backup stock (bachat stock) kept in the wholesaler's godown (warehouse) in cities like Mumbai or Delhi. It acts as a safety shield to ensure retailers do not run out of shoes if transit is delayed or during high demand seasons like Diwali/Eid.
                     </p>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      In the chart above, you see a safety buffer threshold line. DemandFlow monitors distributor levels: if unsold distributor inventories drop below the safety buffer (e.g. 25-30 units), a <strong>RESUME PRODUCTION</strong> alert triggers instantly, instructing the factory to restart machinery to sustain stock.
+                      DemandFlow AI monitors these godown stock levels. If the wholesaler's stock falls below this backup stock line, the AI alerts the Agra factory (karkhana) instantly: <strong>"RESUME PRODUCTION"</strong>. This instructs the machines to restart, avoiding market stockouts.
                     </p>
                   </div>
                 )}
 
                 {glossaryActiveTab === "rop" && (
                   <div className="flex flex-col gap-3 animate-fade-in">
-                    <span className="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full self-start">Reorder point (ROP)</span>
-                    <h3 className="text-base font-black text-md-on-background">Understanding the Reorder Point (ROP) Metric</h3>
+                    <span className="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full self-start">Reorder Point (ROP Limit)</span>
+                    <h3 className="text-base font-black text-md-on-background">Understanding the Reorder Point (ROP - Order Trigger Level)</h3>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      The Reorder Point (ROP) is the specific level of inventory which triggers action to replenish that product SKU. It is calculated by multiplying lead-time demand by target buffers.
+                      The <strong>Reorder Point (ROP)</strong> is the exact alarm level of godown stock where the wholesaler must request more shoe batches from the Agra factory. It ensures new shoes arrive before the godown runs empty.
                     </p>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      Formula: ROP = (Average Daily Sales x Supplier Lead Time in Days) + Safety Stock Buffer. When physical levels cross below ROP, the model issues warnings to prevent delivery failures.
+                      <strong>Formula:</strong> ROP = (Average Shoes Sold Daily x Days needed for Agra-to-Delhi transport) + Emergency Backup Stock. If inventory drops below this ROP limit, the system alerts the factory immediately.
                     </p>
                   </div>
                 )}
 
                 {glossaryActiveTab === "throttle" && (
                   <div className="flex flex-col gap-3 animate-fade-in">
-                    <span className="text-[10px] font-black text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full self-start">Gas burn throttling</span>
-                    <h3 className="text-base font-black text-md-on-background">Science of Gas Burn Throttling & Environmental Impact</h3>
+                    <span className="text-[10px] font-black text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full self-start">Karkhana Energy Saving</span>
+                    <h3 className="text-base font-black text-md-on-background">Saving Karkhana Fuel & Managing Blocked Working Capital</h3>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      Heavy factory machinery (compressors, gas vulcanizers) consumes extensive fuel (represented as Red Dashed line in chart) when active. Holding stock causes excessive warehouses storage fees and gas waste.
+                      Shoe karkhanas (factories) burn massive coal, electricity, and gas to run vulcanizing ovens and assembly machines. If the wholesaler already has 80% to 90% unsold stock sitting in their godowns, keeping the factory running is wasteful. It unnecessarily burns fuel and blocks crucial cash (working capital).
                     </p>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      When distributor stock is high (&ge;80% unsold), DemandFlow AI automatically flags a **HOLD PRODUCTION** recommendation. Approving it pauses factory assembly, instantly dropping fuel consumption and carbon footprint burden as shown on Day 1-10 on the SKU-999 chart!
+                      DemandFlow AI flags a <strong>"HOLD PRODUCTION"</strong> recommendation when stock is too high. Pausing the machines stops coal and electricity burn instantly, improving the factory's cash flow!
                     </p>
                   </div>
                 )}
 
                 {glossaryActiveTab === "spatial" && (
                   <div className="flex flex-col gap-3 animate-fade-in">
-                    <span className="text-[10px] font-black text-purple-600 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-full self-start">Spatial rebalancing</span>
-                    <h3 className="text-base font-black text-md-on-background">Spatial Discrepancy Transfers vs. Machinery Restarts</h3>
+                    <span className="text-[10px] font-black text-purple-600 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-full self-start">Inter-City Stock Shifting</span>
+                    <h3 className="text-base font-black text-md-on-background">Stock Shifting (Regional Transfer) vs. Starting Karkhana Machines</h3>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      Occasionally, inventory is imbalanced: a distributor warehouse in Region A is empty, while a warehouse in Region B has a massive surplus of the same SKU.
+                      Often, stock is uneven: a Delhi wholesaler might have massive unsold shoe stacks (surplus), while a Mumbai wholesaler is completely sold out and losing active retail sales.
                     </p>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      Restarting factory machinery is incredibly fuel-heavy and slow. Rather than manufacturing new units, DemandFlow identifies this spatial anomaly and suggests a **REGIONAL TRANSFER** (Column 2 recommendation). Moving existing units avoids spinning up production lines, conserving massive carbon offsets.
+                      Starting karkhana ovens in Agra to make new shoes burns heavy coal. Instead, DemandFlow AI suggests an <strong>"INTER-CITY STOCK SHIFT"</strong>. Transporting excess stock from Delhi to Mumbai meets Mumbai's demand instantly, avoids factory fuel burn, and frees up Delhi's blocked money!
                     </p>
                   </div>
                 )}
@@ -1156,34 +1156,7 @@ export default function DashboardPage() {
 
             </div>
 
-            {/* Live Demo Datasets download */}
-            <div className="border border-md-outline/10 bg-md-surface-container-low rounded-[24px] p-6 flex flex-col md:flex-row justify-between items-center gap-4 mt-2">
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] uppercase font-bold text-md-primary flex items-center gap-1">
-                  <Activity className="h-3.5 w-3.5 text-md-primary" /> Live Demo Resource
-                </span>
-                <h3 className="text-xs font-extrabold text-md-on-background">Test with Full-Fledged 1,000 Product Datasheets</h3>
-                <p className="text-[11px] text-md-on-surface-variant leading-relaxed">
-                  Generate premium, high-fidelity sample supply chain datasheets representing 1,000 distinct product SKUs.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2.5 shrink-0">
-                <a 
-                  href="/demo_datasheets/sales_demand_1000.csv" 
-                  download="sales_demand_1000.csv" 
-                  className="inline-flex items-center gap-2 bg-white text-md-primary font-bold text-[11px] px-4 py-2.5 rounded-full border border-md-outline/10 shadow-sm hover:shadow hover:bg-md-primary/5 transition-all cursor-pointer"
-                >
-                  <Download className="h-3.5 w-3.5 text-md-primary" /> Sales Data (1,000 SKUs)
-                </a>
-                <a 
-                  href="/demo_datasheets/stock_inventory_1000.csv" 
-                  download="stock_inventory_1000.csv" 
-                  className="inline-flex items-center gap-2 bg-white text-md-primary font-bold text-[11px] px-4 py-2.5 rounded-full border border-md-outline/10 shadow-sm hover:shadow hover:bg-md-primary/5 transition-all cursor-pointer"
-                >
-                  <Download className="h-3.5 w-3.5 text-md-primary" /> Stock Levels (2,000 Rows)
-                </a>
-              </div>
-            </div>
+
 
             {/* Run Button */}
             <div className="flex flex-col items-center gap-3 border-t border-md-outline/10 pt-6 mt-2">
