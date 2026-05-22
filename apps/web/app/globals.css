@@ -1,71 +1,54 @@
 @import "tailwindcss";
 
 @theme {
-  --color-md-background: #e0e5ec;
-  --color-md-on-background: #2d3436;
-  --color-md-primary: #ff4757;
-  --color-md-on-primary: #ffffff;
-  --color-md-secondary-container: #d1d9e6;
-  --color-md-on-secondary-container: #2d3436;
-  --color-md-tertiary: #4a5568;
-  --color-md-surface-container: #f0f2f5;
-  --color-md-surface-container-low: #d1d9e6;
-  --color-md-outline: #babecc;
-  --color-md-on-surface-variant: #4a5568;
+  --color-md-background: #FFFBFE;
+  --color-md-on-background: #1C1B1F;
+  --color-md-primary: #6750A4;
+  --color-md-on-primary: #FFFFFF;
+  --color-md-secondary-container: #E8DEF8;
+  --color-md-on-secondary-container: #1D192B;
+  --color-md-tertiary: #7D5260;
+  --color-md-surface-container: #F3EDF7;
+  --color-md-surface-container-low: #E7E0EC;
+  --color-md-outline: #79747E;
+  --color-md-on-surface-variant: #49454F;
 
   /* Border Radii */
-  --radius-md-xs: 4px;
-  --radius-md-sm: 8px;
+  --radius-md-xs: 8px;
+  --radius-md-sm: 12px;
   --radius-md-md: 16px;
   --radius-md-lg: 24px;
-  --radius-md-xl: 30px;
-  --radius-md-xxl: 9999px;
+  --radius-md-xl: 28px;
+  --radius-md-xxl: 48px;
 
   /* Typography */
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", "Roboto Mono", monospace;
+  --font-sans: var(--font-roboto), system-ui, sans-serif;
 
   /* Custom Transitions */
-  --transition-timing-function-md: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-timing-function-md: cubic-bezier(0.2, 0, 0, 1);
   --transition-duration-md: 300ms;
 }
 
 :root {
-  background-color: #e0e5ec;
-  color: #2d3436;
-
-  /* Neumorphic Shadows for Light Mode */
-  --shadow-card: 8px 8px 16px #babecc, -8px -8px 16px #ffffff;
-  --shadow-floating: 12px 12px 24px #babecc, -12px -12px 24px #ffffff, inset 1px 1px 0 rgba(255,255,255,0.5);
-  --shadow-recessed: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff;
-  --shadow-pressed: inset 6px 6px 12px #babecc, inset -6px -6px 12px #ffffff;
-  --shadow-glow: 0 0 10px 2px rgba(255, 71, 87, 0.6);
-  --shadow-glow-green: 0 0 10px 2px rgba(34, 197, 94, 0.6);
+  background-color: #FFFBFE;
+  color: #1C1B1F;
 }
 
 :root[data-theme="dark"] {
-  --color-md-background: #1b1e22; /* Deep matte carbon gray */
-  --color-md-on-background: #ece9f1;
-  --color-md-primary: #ff4757; /* Maintain iconic red accent */
-  --color-md-on-primary: #ffffff;
-  --color-md-secondary-container: #121417;
-  --color-md-on-secondary-container: #ece9f1;
-  --color-md-tertiary: #a8b2d1;
-  --color-md-surface-container: #262a30; /* Raised panel */
-  --color-md-surface-container-low: #121417; /* Deep well */
-  --color-md-outline: #101215;
-  --color-md-on-surface-variant: #a8b2d1;
+  --color-md-background: #111114;
+  --color-md-on-background: #ECE9F1;
+  --color-md-primary: #BFA5FF;
+  --color-md-on-primary: #24113D;
+  --color-md-secondary-container: #2D2438;
+  --color-md-on-secondary-container: #E8DEF8;
+  --color-md-tertiary: #D2A8B8;
+  --color-md-surface-container: #1A1A1F;
+  --color-md-surface-container-low: #22222A;
+  --color-md-outline: #8A8792;
+  --color-md-on-surface-variant: #C8C3CF;
 
-  background-color: #1b1e22;
-  color: #ece9f1;
-
-  /* Neumorphic Shadows for Dark Mode */
-  --shadow-card: 6px 6px 12px #0f1113, -6px -6px 12px #2d3137;
-  --shadow-floating: 10px 10px 20px #0f1113, -10px -10px 20px #2d3137, inset 1px 1px 0 rgba(255,255,255,0.05);
-  --shadow-recessed: inset 4px 4px 8px #0f1113, inset -4px -4px 8px #2d3137;
-  --shadow-pressed: inset 6px 6px 12px #0f1113, inset -6px -6px 12px #2d3137;
-  --shadow-glow: 0 0 12px 3px rgba(255, 71, 87, 0.7);
-  --shadow-glow-green: 0 0 12px 3px rgba(34, 197, 94, 0.7);
+  background-color: #111114;
+  color: #ECE9F1;
 }
 
 body {
@@ -73,121 +56,52 @@ body {
   background-color: var(--color-md-background);
   color: var(--color-md-on-background);
   overflow-x: hidden;
-  position: relative;
-}
-
-/* Micro-noise background texture */
-.industrial-noise {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  opacity: 0.05;
-  pointer-events: none;
-  z-index: 9999;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* Blueprint Grid Background Pattern */
-.blueprint-grid {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(45, 52, 54, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(45, 52, 54, 0.04) 1px, transparent 1px);
-}
-
-:root[data-theme="dark"] .blueprint-grid {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-}
-
-/* CRT Screen Scanlines */
-.crt-screen {
-  position: relative;
-  background-color: #0b0f12 !important;
-  color: #22c55e !important;
-  overflow: hidden;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8) !important;
-}
-
-.crt-screen::before {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-  z-index: 10;
-  background-size: 100% 3px, 6px 100%;
-  pointer-events: none;
-}
-
-.crt-screen::after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
-  z-index: 11;
-  pointer-events: none;
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--color-md-background);
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-md-surface-container-low);
-  border: 2px solid var(--color-md-background);
-  border-radius: 9999px;
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-md-outline);
 }
 
-/* Conveyor belt loop animation */
-@keyframes conveyor-slide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-40px); }
+/* Material Design State Layers & Effects */
+.md-state-hover {
+  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
 }
-.animate-conveyor {
-  animation: conveyor-slide 1.5s linear infinite;
+.md-state-hover:hover {
+  filter: brightness(0.95);
 }
-
-/* Gear rotation animation */
-@keyframes gear-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-.animate-gear-spin {
-  animation: gear-spin 10s linear infinite;
-}
-.animate-gear-spin-reverse {
-  animation: gear-spin 10s linear infinite reverse;
+.md-state-hover:active {
+  transform: scale(0.95);
 }
 
-/* Pulse keyframes for laser scan */
-@keyframes laser-sweep {
-  0% { transform: translateY(0) scaleY(1); opacity: 0.3; }
-  50% { transform: translateY(120px) scaleY(1.5); opacity: 0.9; }
-  100% { transform: translateY(0) scaleY(1); opacity: 0.3; }
-}
-.animate-laser {
-  animation: laser-sweep 3s ease-in-out infinite;
+/* Custom glow shapes animations */
+@keyframes float-slow {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(30px, -50px) scale(1.2); }
+  100% { transform: translate(-20px, 20px) scale(0.9); }
 }
 
-/* LED pulse */
-@keyframes led-glow {
-  0%, 100% { opacity: 0.6; filter: brightness(0.9); }
-  50% { opacity: 1; filter: brightness(1.2) drop-shadow(0 0 4px currentColor); }
-}
-.animate-led {
-  animation: led-glow 2s infinite ease-in-out;
+@keyframes float-medium {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-40px, 30px) scale(0.85); }
+  100% { transform: translate(20px, -20px) scale(1.15); }
 }
 
+.animate-float-slow {
+  animation: float-slow 15s infinite alternate ease-in-out;
+}
+
+.animate-float-medium {
+  animation: float-medium 12s infinite alternate ease-in-out;
+}

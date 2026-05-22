@@ -57,23 +57,23 @@ export default function RecommendationsTab() {
     switch (type) {
       case "restock":
         return {
-          label: "PROCUREMENT RESTOCK",
-          styles: "border-[#6b46c1]/40 bg-[#6b46c1]/5 text-[#6b46c1] dark:text-purple-300 font-mono"
+          label: "Procurement Restock",
+          styles: "bg-purple-100 text-purple-800 border-purple-200"
         };
       case "transfer":
         return {
-          label: "WAREHOUSE TRANSFER",
-          styles: "border-[#3182ce]/40 bg-[#3182ce]/5 text-[#3182ce] dark:text-blue-300 font-mono"
+          label: "Warehouse Transfer",
+          styles: "bg-blue-100 text-blue-800 border-blue-200"
         };
       case "hold":
         return {
-          label: "HOLD PURCHASE PROTOCOL",
-          styles: "border-[#dd6b20]/40 bg-[#dd6b20]/5 text-[#dd6b20] dark:text-orange-300 font-mono"
+          label: "Hold Purchase",
+          styles: "bg-amber-100 text-amber-800 border-amber-200"
         };
       default:
         return {
-          label: "AI OPTIMIZATION SIGNAL",
-          styles: "border-md-outline/25 bg-black/5 text-md-on-surface-variant font-mono"
+          label: "AI Recommendation",
+          styles: "bg-md-secondary-container text-md-on-secondary-container border-md-outline/10"
         };
     }
   };
@@ -92,12 +92,9 @@ export default function RecommendationsTab() {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-3 font-mono text-xs">
-          <div className="relative flex items-center justify-center">
-            <RefreshCw className="h-8 w-8 text-md-primary animate-spin" />
-            <span className="absolute w-2 h-2 rounded-full bg-md-primary animate-ping" />
-          </div>
-          <p className="text-md-on-surface-variant font-bold uppercase tracking-widest animate-pulse">SYSTEM: SCORING INBOX PIPELINE...</p>
+        <div className="flex flex-col items-center justify-center py-24 gap-3">
+          <RefreshCw className="h-8 w-8 text-md-primary animate-spin" />
+          <p className="text-sm text-md-on-surface-variant font-medium">Running recommendation scorer pipeline...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -117,46 +114,31 @@ export default function RecommendationsTab() {
                   key={rec.id} 
                   className={`flex flex-col gap-4 relative overflow-hidden transition-all duration-300 border ${
                     rec.action_status === "approved"
-                      ? "border-emerald-300 bg-[#eef8f4] dark:bg-[#162720] opacity-90 shadow-md"
+                      ? "border-green-300 bg-green-50/20 opacity-80"
                       : rec.action_status === "rejected"
-                      ? "border-red-200 bg-[#faf2f2] dark:bg-[#281b1b] opacity-80 shadow-md"
-                      : "border-[#d1cbbd] dark:border-[#2d2926] bg-[#faf6ee] dark:bg-[#1b1917] shadow-[2px_4px_10px_rgba(0,0,0,0.06)]"
+                      ? "border-red-200 bg-red-50/20 opacity-60"
+                      : "border-md-outline/10 bg-md-surface-container"
                   }`}
                 >
-                  {/* Torn edge mechanical paper line */}
-                  <div className="w-full border-t border-dashed border-[#babecc] dark:border-[#4a453f] opacity-50 -mt-1" />
-
                   {/* Top line with type and confidence score */}
-                  <div className="flex justify-between items-center z-10">
-                    <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold border ${badge.styles}`}>
+                  <div className="flex justify-between items-center">
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${badge.styles}`}>
                       {badge.label}
                     </span>
-                    <span className="flex items-center gap-1 text-[10px] font-black text-md-primary bg-md-primary/5 px-2 py-0.5 rounded border border-md-primary/10 font-mono">
-                      <Sparkles className="h-3 w-3 shrink-0" /> {scorePercent}% CONFIDENCE
+                    <span className="flex items-center gap-1 text-xs font-black text-md-primary bg-md-primary/5 px-2 py-0.5 rounded-full">
+                      <Sparkles className="h-3 w-3 shrink-0" /> {scorePercent}% Score
                     </span>
                   </div>
 
                   {/* Body text explanation */}
-                  <div className="text-xs font-mono text-[#4a453f] dark:text-[#d1cbbd] leading-relaxed py-2 pl-2 border-l-2 border-[#babecc] dark:border-[#4a453f] z-10 bg-black/5 p-2 rounded">
+                  <div className="text-xs font-medium text-md-on-background leading-relaxed py-2">
                     {rec.explanation}
                   </div>
 
-                  {/* Mechanical Approved/Rejected overlay ink stamps */}
-                  {rec.action_status === "approved" && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-12 border-4 border-double border-emerald-600/60 text-emerald-600/60 font-mono text-2xl font-black px-4 py-1 rounded tracking-widest pointer-events-none select-none z-20 uppercase animate-scale-in">
-                      APPROVED
-                    </div>
-                  )}
-                  {rec.action_status === "rejected" && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-12 border-4 border-double border-red-600/60 text-red-600/60 font-mono text-2xl font-black px-4 py-1 rounded tracking-widest pointer-events-none select-none z-20 uppercase animate-scale-in">
-                      REJECTED
-                    </div>
-                  )}
-
                   {/* Status / Action buttons */}
-                  <div className="flex items-center justify-between border-t border-dashed border-[#babecc] dark:border-[#4a453f] pt-4 mt-auto z-10">
-                    <span className="text-[9px] text-[#4a453f]/75 dark:text-[#d1cbbd]/70 font-mono">
-                      RECORDED: {new Date(rec.created_at).toLocaleDateString()}
+                  <div className="flex items-center justify-between border-t border-md-outline/5 pt-4 mt-auto">
+                    <span className="text-[10px] text-md-on-surface-variant font-medium">
+                      Scored: {new Date(rec.created_at).toLocaleDateString()}
                     </span>
                     
                     <div className="flex gap-2">
@@ -166,29 +148,32 @@ export default function RecommendationsTab() {
                             variant="outlined" 
                             disabled={actioningId !== null}
                             onClick={() => handleAction(rec.id, "rejected")}
-                            className="h-8 px-3.5 text-[10px] font-mono font-bold border-red-400 text-red-600 hover:bg-red-50"
+                            className="h-9 px-4 text-xs font-bold border-red-300 text-red-600 hover:bg-red-50"
                           >
-                            REJECT
+                            Reject
                           </Button>
                           <Button 
                             disabled={actioningId !== null}
                             onClick={() => handleAction(rec.id, "approved")}
-                            className="h-8 px-3.5 text-[10px] font-mono font-bold bg-green-600 text-white hover:bg-green-700"
+                            className="h-9 px-4 text-xs font-bold bg-green-600 text-white hover:bg-green-700"
                           >
-                            APPROVE
+                            Approve
                           </Button>
                         </>
                       ) : rec.action_status === "approved" ? (
-                        <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          <CheckCircle2 className="h-3 w-3" /> VERIFIED
+                        <span className="flex items-center gap-1 text-xs font-bold text-green-600">
+                          <CheckCircle2 className="h-4 w-4" /> Approved
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-red-600 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
-                          <XCircle className="h-3 w-3" /> REJECTED
+                        <span className="flex items-center gap-1 text-xs font-bold text-red-600">
+                          <XCircle className="h-4 w-4" /> Rejected
                         </span>
                       )}
                     </div>
                   </div>
+
+                  {/* Visual background atmospheric detail */}
+                  <div className="absolute right-[-10%] top-[-10%] w-24 h-24 bg-md-primary/5 rounded-full blur-xl pointer-events-none -z-10" />
                 </Card>
               );
             })

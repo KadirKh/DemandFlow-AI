@@ -44,18 +44,17 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen w-full relative flex items-center justify-center p-6 bg-[var(--color-md-background)]">
+    <main className="min-h-screen w-full relative flex items-center justify-center p-4 overflow-hidden">
       <GlowOverlay />
 
-      <Card hasScrews={true} hasVents={true} className="w-full max-w-md flex flex-col gap-6 p-8 shadow-[var(--shadow-floating)]">
-        {/* Logo and Header info */}
-        <div className="flex flex-col items-center gap-2 text-center select-none mt-2">
-          <div className="h-12 w-12 bg-[var(--color-md-primary)] text-white rounded-lg flex items-center justify-center shadow-[4px_4px_8px_rgba(255,71,87,0.3)] border border-[rgba(255,255,255,0.2)]">
-            <Boxes className="h-6 w-6" />
+      <Card className="w-full max-w-md flex flex-col gap-6 p-8 relative shadow-lg">
+        <div className="flex flex-col items-center gap-2 text-center select-none">
+          <div className="h-14 w-14 bg-md-primary text-white rounded-[20px] flex items-center justify-center shadow-md animate-pulse">
+            <Boxes className="h-8 w-8" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-[var(--color-md-on-background)] mt-2 font-sans uppercase">Create Operator Account</h1>
-          <p className="text-[10px] uppercase font-bold tracking-wider text-[var(--color-md-on-surface-variant)]/60 font-mono">
-            OPERATOR LICENSE REGISTRATION
+          <h1 className="text-2xl font-bold tracking-tight text-md-on-background mt-2">Create Account</h1>
+          <p className="text-xs text-md-on-surface-variant max-w-xs leading-relaxed">
+            Set up your DemandFlow AI account to access the console.
           </p>
         </div>
 
@@ -63,7 +62,7 @@ export default function SignupPage() {
           <Input
             id="email"
             type="text"
-            label="OPERATOR USER ID"
+            label="User ID"
             placeholder="acme-manufacturing"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -73,7 +72,7 @@ export default function SignupPage() {
           <Input
             id="password"
             type="password"
-            label="CHASSIS PASSWORD"
+            label="Password"
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -83,64 +82,46 @@ export default function SignupPage() {
           <Input
             id="confirmPassword"
             type="password"
-            label="CONFIRM PASSWORD"
+            label="Confirm Password"
             placeholder="••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
 
-          {/* Custom Styled Role Selector Switch */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold text-[var(--color-md-on-surface-variant)] px-1 select-none font-mono">
-              OPERATION ROLE SELECT
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] uppercase font-bold text-md-on-surface-variant px-1">
+              Role
             </label>
-            <div className="grid grid-cols-2 gap-2 bg-[var(--color-md-background)] p-1 rounded-md shadow-[var(--shadow-recessed)] select-none">
-              <button
-                type="button"
-                onClick={() => setRole("manufacturer")}
-                className={`py-2 text-[10px] font-mono font-bold uppercase rounded transition-all duration-150 cursor-pointer ${
-                  role === "manufacturer"
-                    ? "bg-[var(--color-md-surface-container)] text-[var(--color-md-on-background)] shadow-[var(--shadow-card)]"
-                    : "text-[var(--color-md-on-surface-variant)]/60 hover:text-[var(--color-md-on-background)]"
-                }`}
-              >
-                MANUFACTURER
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("distributor")}
-                className={`py-2 text-[10px] font-mono font-bold uppercase rounded transition-all duration-150 cursor-pointer ${
-                  role === "distributor"
-                    ? "bg-[var(--color-md-surface-container)] text-[var(--color-md-on-background)] shadow-[var(--shadow-card)]"
-                    : "text-[var(--color-md-on-surface-variant)]/60 hover:text-[var(--color-md-on-background)]"
-                }`}
-              >
-                DISTRIBUTOR
-              </button>
-            </div>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="h-11 bg-md-surface-container-low text-xs font-bold text-md-on-background px-3 border border-md-outline/20 rounded-full focus:outline-none focus:border-md-primary"
+            >
+              <option value="manufacturer">Manufacturer</option>
+              <option value="distributor">Distributor</option>
+            </select>
           </div>
 
           {error && (
-            <div className="p-3.5 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-[10px] rounded font-mono font-bold flex gap-2 items-center">
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-bold flex gap-2 items-center">
               <Shield className="h-4 w-4 shrink-0" />
-              <span className="uppercase">{error}</span>
+              <span>{error}</span>
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full mt-2 h-12 text-xs font-mono tracking-widest uppercase">
-            {loading ? "REGISTERATIONAL SECURING..." : "ENGAGE ACCOUNT"}
+          <Button type="submit" disabled={loading} className="w-full mt-4 h-11 text-xs font-bold">
+            {loading ? "Creating Account..." : "Create Account"}
           </Button>
         </form>
 
-        <div className="text-[10px] font-mono text-[var(--color-md-on-surface-variant)]/60 text-center select-none mb-2">
-          OPERATOR LICENSE ALREADY REGISTERED?{" "}
-          <Link href="/" className="text-[var(--color-md-primary)] font-bold hover:underline ml-1">
-            SIGN IN DECK
+        <div className="text-[11px] text-md-on-surface-variant text-center">
+          Already have an account?{" "}
+          <Link href="/" className="text-md-primary font-bold hover:underline">
+            Sign in
           </Link>
         </div>
       </Card>
     </main>
   );
 }
-

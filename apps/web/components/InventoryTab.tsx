@@ -109,16 +109,16 @@ export default function InventoryTab() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "out_of_stock":
-        return <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-red-500/25 bg-red-500/5 text-[10px] font-mono font-bold text-red-600 uppercase"><span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_6px_#ef4444] animate-led" />OUT</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">Out of Stock</span>;
       case "critical":
-        return <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-rose-500/25 bg-rose-500/5 text-[10px] font-mono font-bold text-rose-600 uppercase"><span className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_#f43f5e] animate-led" />CRIT</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-100">Critical</span>;
       case "low_stock":
-        return <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-amber-500/25 bg-amber-500/5 text-[10px] font-mono font-bold text-amber-600 uppercase"><span className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_6px_#f59e0b] animate-led" />LOW</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">Low Stock</span>;
       case "overstocked":
-        return <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-blue-500/25 bg-blue-500/5 text-[10px] font-mono font-bold text-blue-600 uppercase"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_#3b82f6] animate-led" />OVER</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">Overstock</span>;
       case "healthy":
       default:
-        return <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-500/25 bg-emerald-500/5 text-[10px] font-mono font-bold text-emerald-600 uppercase"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981] animate-led" />HEALTHY</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">Healthy</span>;
     }
   };
 
@@ -138,50 +138,47 @@ export default function InventoryTab() {
       {/* Main Grid View */}
       <Card className="overflow-hidden flex flex-col p-0">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-3 font-mono text-xs">
-            <div className="relative flex items-center justify-center">
-              <RefreshCw className="h-8 w-8 text-md-primary animate-spin" />
-              <span className="absolute w-2 h-2 rounded-full bg-md-primary animate-ping" />
-            </div>
-            <p className="text-md-on-surface-variant font-bold uppercase tracking-widest animate-pulse">SYSTEM: LOADING CROSS-DOCK SNAPSHOTS...</p>
+          <div className="flex flex-col items-center justify-center py-24 gap-3">
+            <RefreshCw className="h-8 w-8 text-md-primary animate-spin" />
+            <p className="text-sm text-md-on-surface-variant font-medium">Aggregating cross-dock inventory snapshots...</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-md-surface-container-low/50 border-b border-md-outline/10 text-xs font-bold text-md-on-surface-variant uppercase tracking-wider font-mono">
-                  <th className="py-4 px-6">SKU / ITEM NAME</th>
-                  <th className="py-4 px-4">WAREHOUSE SITE</th>
-                  <th className="py-4 px-4 text-right">ON HAND</th>
-                  <th className="py-4 px-4 text-right">SAFETY STOCK</th>
-                  <th className="py-4 px-4 text-right">REORDER (ROP)</th>
-                  <th className="py-4 px-4 text-right">DAYS COVER</th>
-                  <th className="py-4 px-4">STATUS</th>
-                  <th className="py-4 px-6 text-center">ACTION</th>
+                <tr className="bg-md-surface-container-low/50 border-b border-md-outline/10 text-xs font-bold text-md-on-surface-variant uppercase tracking-wider">
+                  <th className="py-4 px-6">SKU / Item Name</th>
+                  <th className="py-4 px-4">Warehouse Site</th>
+                  <th className="py-4 px-4 text-right">On Hand</th>
+                  <th className="py-4 px-4 text-right">Safety Stock</th>
+                  <th className="py-4 px-4 text-right">Reorder Point (ROP)</th>
+                  <th className="py-4 px-4 text-right">Days Cover</th>
+                  <th className="py-4 px-4">Status</th>
+                  <th className="py-4 px-6 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-md-outline/5 text-sm font-mono">
+              <tbody className="divide-y divide-md-outline/5 text-sm">
                 {items.map((item, i) => (
                   <tr key={i} className="hover:bg-md-surface-container-low/20 transition-colors duration-150">
                     <td className="py-3.5 px-6">
-                      <div className="font-black text-md-on-background text-xs font-mono">{item.sku_code}</div>
-                      <div className="text-[11px] text-md-on-surface-variant font-sans font-medium truncate max-w-xs">{item.name}</div>
+                      <div className="font-bold text-md-on-background text-xs">{item.sku_code}</div>
+                      <div className="text-[11px] text-md-on-surface-variant font-medium truncate max-w-xs">{item.name}</div>
                     </td>
-                    <td className="py-3.5 px-4 font-semibold text-md-on-surface-variant flex items-center gap-1.5 mt-2 font-mono uppercase text-xs">
+                    <td className="py-3.5 px-4 font-semibold text-md-on-surface-variant flex items-center gap-1.5 mt-2">
                       <Warehouse className="h-4 w-4 text-md-primary/60 shrink-0" />
                       <span>{item.warehouse_name} ({item.city})</span>
                     </td>
                     <td className="py-3.5 px-4 text-right font-black text-md-on-background">
-                      {item.on_hand.toLocaleString()}
+                      {item.on_hand}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-bold text-md-on-surface-variant/80">
-                      {item.safety_stock.toLocaleString()}
+                    <td className="py-3.5 px-4 text-right font-medium text-md-on-surface-variant/80">
+                      {item.safety_stock}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-bold text-md-on-surface-variant/80">
-                      {item.reorder_point.toLocaleString()}
+                    <td className="py-3.5 px-4 text-right font-medium text-md-on-surface-variant/80">
+                      {item.reorder_point}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-black text-md-on-background">
-                      {item.days_of_cover} <span className="text-[10px] font-bold text-md-on-surface-variant/70">DAYS</span>
+                    <td className="py-3.5 px-4 text-right font-semibold text-md-on-surface-variant">
+                      {item.days_of_cover} days
                     </td>
                     <td className="py-3.5 px-4">
                       {getStatusBadge(item.status)}
@@ -190,7 +187,7 @@ export default function InventoryTab() {
                       <Button 
                         variant="ghost" 
                         onClick={() => setEditingItem({ sku: item.sku_code, whId: item.warehouse_id, qty: item.on_hand })}
-                        className="h-8 px-3 text-[10px] flex gap-1.5 mx-auto font-mono font-bold uppercase"
+                        className="h-8 px-3 text-[11px] flex gap-1.5 mx-auto font-bold"
                       >
                         <Edit3 className="h-3 w-3" /> Adjust
                       </Button>
@@ -205,50 +202,29 @@ export default function InventoryTab() {
 
       {/* Editing Dialog Modal Overlay */}
       {editingItem && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <Card className="w-full max-w-md flex flex-col gap-5 p-6 animate-scale-in">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-sm flex flex-col gap-5 p-6 animate-scale-in">
             <div>
-              <h3 className="text-base font-bold text-md-on-background uppercase tracking-wider font-mono">Adjust Inventory Stock</h3>
-              <p className="text-xs text-md-on-surface-variant font-mono mt-1">Manual stock count overrides database records immediately.</p>
+              <h3 className="text-base font-bold text-md-on-background">Adjust Inventory Stock</h3>
+              <p className="text-xs text-md-on-surface-variant mt-1">Manual stock count overrides database records immediately.</p>
             </div>
             
-            <div className="flex flex-col gap-4 bg-md-surface-container-low shadow-[var(--shadow-recessed)] border border-md-outline/10 p-4 rounded-lg">
-              <div className="text-xs font-black font-mono text-md-primary uppercase tracking-widest">{editingItem.sku}</div>
-              
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-mono font-bold text-md-on-surface-variant uppercase">Physical Count On-Hand Qty</label>
-                <div className="flex gap-4 items-center">
-                  <Input
-                    className="w-24 text-right font-mono"
-                    type="number"
-                    value={editingItem.qty}
-                    onChange={(e) => setEditingItem({ ...editingItem, qty: Math.max(0, Number(e.target.value)) })}
-                  />
-                  <div className="flex-1 flex flex-col gap-1">
-                    <input
-                      type="range"
-                      min="0"
-                      max="1000"
-                      value={editingItem.qty}
-                      onChange={(e) => setEditingItem({ ...editingItem, qty: Number(e.target.value) })}
-                      className="w-full accent-md-primary cursor-pointer animate-fade-in"
-                    />
-                    <div className="flex justify-between text-[9px] font-mono text-md-on-surface-variant/60 uppercase">
-                      <span>0 units</span>
-                      <span>500 units</span>
-                      <span>1000 units</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs font-black text-md-primary">{editingItem.sku}</div>
+              <Input
+                label="Physical Count On-Hand Qty"
+                type="number"
+                value={editingItem.qty}
+                onChange={(e) => setEditingItem({ ...editingItem, qty: Number(e.target.value) })}
+              />
             </div>
             
-            <div className="flex justify-end gap-3 mt-2 font-mono">
-              <Button variant="ghost" onClick={() => setEditingItem(null)} className="text-xs h-9 font-bold">
-                CANCEL
+            <div className="flex justify-end gap-3 mt-2">
+              <Button variant="ghost" onClick={() => setEditingItem(null)} className="text-xs h-9">
+                Cancel
               </Button>
-              <Button onClick={handleUpdateStock} disabled={updating} className="text-xs h-9 font-bold">
-                {updating ? "SAVING..." : "APPLY COUNT"}
+              <Button onClick={handleUpdateStock} disabled={updating} className="text-xs h-9">
+                {updating ? "Saving..." : "Apply Count"}
               </Button>
             </div>
           </Card>

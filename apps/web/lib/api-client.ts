@@ -170,24 +170,6 @@ export class ApiClient {
   }
 
   /**
-   * Google Sign-in Auth Bypass
-   */
-  static async loginWithGoogle(): Promise<{ token: string; role: string }> {
-    // Mimic API handshakes
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    
-    const mockToken = "google_mock_jwt_session_" + Math.random().toString(36).substring(2, 15);
-    const mockRole = "Manufacturer";
-    
-    this.setAuth(mockToken, mockRole);
-    return {
-      token: mockToken,
-      role: mockRole,
-    };
-  }
-
-
-  /**
    * Register
    */
   static async register(
