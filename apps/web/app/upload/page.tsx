@@ -15,7 +15,12 @@ import {
   Loader2, 
   LogOut,
   Brain,
-  Trash2
+  Trash2,
+  Download,
+  ArrowRight,
+  TrendingUp,
+  Activity,
+  Package
 } from "lucide-react";
 
 export default function UploadPage() {
@@ -135,20 +140,20 @@ export default function UploadPage() {
   };
 
   return (
-    <main className="min-h-screen w-full relative flex items-center justify-center p-6 overflow-y-auto">
+    <main className="min-h-screen w-full relative flex items-center justify-center p-6 overflow-y-auto bg-md-background">
       <GlowOverlay />
 
-      <Card className="w-full max-w-4xl flex flex-col gap-8 p-8 relative shadow-xl my-8">
+      <Card className="w-full max-w-5xl flex flex-col gap-8 p-8 relative shadow-2xl my-8 bg-md-surface/90 backdrop-blur-md">
         
-        {/* Header Action Bar */}
-        <div className="flex justify-between items-center border-b border-md-outline/10 pb-4">
+        {/* Top Header Action Bar */}
+        <div className="flex justify-between items-center border-b border-md-outline/10 pb-5">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-md-primary text-white rounded-xl flex items-center justify-center shadow-md">
+            <div className="h-11 w-11 bg-md-primary text-white rounded-[16px] flex items-center justify-center shadow-lg animate-pulse">
               <Brain className="h-6 w-6" />
             </div>
             <div>
-              <h1 className="text-lg font-black text-md-on-background tracking-tight">DemandFlow Ingestion</h1>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-md-primary">Setup & Data Alignment</span>
+              <h1 className="text-xl font-black text-md-on-background tracking-tight">DemandFlow Prediction Studio</h1>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-md-primary">Smart Inventory & Production Alignment</span>
             </div>
           </div>
           <Button variant="outlined" onClick={handleLogout} className="h-9 px-3 text-xs font-bold border-md-outline/30 flex gap-2 items-center hover:bg-red-50 hover:border-red-200 hover:text-red-600">
@@ -156,25 +161,56 @@ export default function UploadPage() {
           </Button>
         </div>
 
-        {/* Info Box */}
-        <div className="bg-md-primary/5 border border-md-primary/10 rounded-[18px] p-5">
-          <h2 className="text-sm font-bold text-md-primary mb-1.5 flex gap-2 items-center">
-            <Brain className="h-4.5 w-4.5 animate-pulse" />
-            AI Prediction Engine Ingestion Requirements
+        {/* Visual Guide: How DemandFlow AI Works */}
+        <div className="bg-md-primary/5 border border-md-primary/10 rounded-[20px] p-6">
+          <h2 className="text-sm font-extrabold text-md-primary mb-3 flex gap-2 items-center">
+            <Brain className="h-4.5 w-4.5" />
+            How DemandFlow AI Predicts and Aligns Your Supply Chain
           </h2>
-          <p className="text-xs text-md-on-surface-variant leading-relaxed">
-            Welcome! To generate real-time replenishment, production deficit, and regional mismatch recommendations, we require two datasets. Once both files are uploaded and validated, our embedded ML predictor model will evaluate stock balances immediately.
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+            <div className="bg-md-surface-container-low p-4 rounded-xl border border-md-outline/5 flex flex-col gap-1.5 shadow-sm">
+              <span className="text-[10px] uppercase font-bold text-red-500 flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-red-500"></span> Pausing Overproduction
+              </span>
+              <h3 className="text-xs font-black text-md-on-background">Hold Production Recommendation</h3>
+              <p className="text-[11px] text-md-on-surface-variant leading-relaxed">
+                If a distributor has high stock levels (<strong>&ge;80% unsold</strong>), we halt production to prevent extra storage fees and save fuel.
+              </p>
+            </div>
+
+            <div className="bg-md-surface-container-low p-4 rounded-xl border border-md-outline/5 flex flex-col gap-1.5 shadow-sm">
+              <span className="text-[10px] uppercase font-bold text-green-600 flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-green-600"></span> Sustaining Stock
+              </span>
+              <h3 className="text-xs font-black text-md-on-background">Resume Production Alert</h3>
+              <p className="text-[11px] text-md-on-surface-variant leading-relaxed">
+                If distributor inventory runs low (<strong>&le;30% capacity</strong>), the system commands immediate factory startup to keep products flowing.
+              </p>
+            </div>
+
+            <div className="bg-md-surface-container-low p-4 rounded-xl border border-md-outline/5 flex flex-col gap-1.5 shadow-sm">
+              <span className="text-[10px] uppercase font-bold text-md-primary flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-md-primary"></span> Smart Balancing
+              </span>
+              <h3 className="text-xs font-black text-md-on-background">Regional Stock Transfers</h3>
+              <p className="text-[11px] text-md-on-surface-variant leading-relaxed">
+                If one region is empty and another is full, DemandFlow recommends a quick transfer instead of starting expensive manufacturing lines.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Dual Drag & Drop Zones */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Step-by-Step Upload Area */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          {/* Card 1: Market Data */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold text-md-on-background px-1">
-              1. Market Demand Dataset (CSV or JSON)
-            </label>
+          {/* Card 1: Sales & Demand Data */}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase font-bold text-md-primary">Step 1</span>
+              <label className="text-xs font-black text-md-on-background">
+                Upload Sales & Customer Demand Data
+              </label>
+            </div>
             <div 
               onDragOver={preventDefault}
               onDragEnter={preventDefault}
@@ -185,11 +221,11 @@ export default function UploadPage() {
                 }
               }}
               onClick={() => marketInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-[20px] p-6 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[220px] ${
+              className={`border-2 border-dashed rounded-[24px] p-6 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[220px] shadow-sm hover:shadow-md ${
                 marketStatus === "success" 
-                  ? "border-green-400 bg-green-50/10" 
+                  ? "border-green-400 bg-green-50/5" 
                   : marketStatus === "error" 
-                    ? "border-red-400 bg-red-50/10" 
+                    ? "border-red-400 bg-red-50/5" 
                     : "border-md-outline/20 hover:border-md-primary bg-md-surface-container-low/40 hover:bg-md-surface-container-low"
               }`}
             >
@@ -207,10 +243,12 @@ export default function UploadPage() {
               
               {marketStatus === "idle" && (
                 <>
-                  <Upload className="h-10 w-10 text-md-on-surface-variant/40 mb-3" />
-                  <p className="text-xs font-bold text-md-on-background">Drag & Drop or Click to Browse</p>
-                  <p className="text-[10px] text-md-on-surface-variant mt-1.5 max-w-[220px] leading-normal">
-                    Must contain Product ID, Factory Production Metrics, Local Retail Sales, and Pending Shopkeeper Orders.
+                  <div className="h-12 w-12 bg-md-primary/10 text-md-primary rounded-2xl flex items-center justify-center mb-3">
+                    <TrendingUp className="h-6 w-6" />
+                  </div>
+                  <p className="text-xs font-black text-md-on-background">Drag & Drop or Click to Browse</p>
+                  <p className="text-[10px] text-md-on-surface-variant mt-2 max-w-[240px] leading-normal">
+                    CSV file containing Product SKU, Current Factory Production, Retail Sales, and Customer Orders.
                   </p>
                 </>
               )}
@@ -218,7 +256,7 @@ export default function UploadPage() {
               {marketStatus === "uploading" && (
                 <>
                   <Loader2 className="h-10 w-10 text-md-primary animate-spin mb-3" />
-                  <p className="text-xs font-bold text-md-on-background">Uploading and parsing file...</p>
+                  <p className="text-xs font-bold text-md-on-background">Reading sales & demand metrics...</p>
                 </>
               )}
 
@@ -226,13 +264,13 @@ export default function UploadPage() {
                 <div className="flex flex-col items-center">
                   <CheckCircle className="h-12 w-12 text-green-500 mb-3" />
                   <p className="text-xs font-black text-green-600 line-clamp-1">{marketFile?.name}</p>
-                  <p className="text-[10px] text-md-on-surface-variant mt-1">Successfully ingested and saved</p>
+                  <p className="text-[10px] text-md-on-surface-variant mt-1 font-semibold">Sales data loaded and validated</p>
                   <button 
                     type="button" 
                     onClick={(e) => { e.stopPropagation(); clearMarket(); }}
-                    className="mt-4 flex gap-1 items-center text-[10px] text-red-500 hover:text-red-700 font-bold"
+                    className="mt-4 flex gap-1.5 items-center text-[10px] text-red-500 hover:text-red-700 font-bold border border-red-200/20 px-3 py-1.5 rounded-full hover:bg-red-50 bg-white shadow-sm transition-all"
                   >
-                    <Trash2 className="h-3.5 w-3.5" /> Remove File
+                    <Trash2 className="h-3.5 w-3.5" /> Remove
                   </button>
                 </div>
               )}
@@ -254,11 +292,14 @@ export default function UploadPage() {
             </div>
           </div>
 
-          {/* Card 2: Inventory Data */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold text-md-on-background px-1">
-              2. Inventory Levels Dataset (CSV or JSON)
-            </label>
+          {/* Card 2: Warehouse Stock Levels */}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase font-bold text-md-primary">Step 2</span>
+              <label className="text-xs font-black text-md-on-background">
+                Upload Warehouse Stock Levels
+              </label>
+            </div>
             <div 
               onDragOver={preventDefault}
               onDragEnter={preventDefault}
@@ -269,11 +310,11 @@ export default function UploadPage() {
                 }
               }}
               onClick={() => inventoryInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-[20px] p-6 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[220px] ${
+              className={`border-2 border-dashed rounded-[24px] p-6 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[220px] shadow-sm hover:shadow-md ${
                 inventoryStatus === "success" 
-                  ? "border-green-400 bg-green-50/10" 
+                  ? "border-green-400 bg-green-50/5" 
                   : inventoryStatus === "error" 
-                    ? "border-red-400 bg-red-50/10" 
+                    ? "border-red-400 bg-red-50/5" 
                     : "border-md-outline/20 hover:border-md-primary bg-md-surface-container-low/40 hover:bg-md-surface-container-low"
               }`}
             >
@@ -291,10 +332,12 @@ export default function UploadPage() {
               
               {inventoryStatus === "idle" && (
                 <>
-                  <Upload className="h-10 w-10 text-md-on-surface-variant/40 mb-3" />
-                  <p className="text-xs font-bold text-md-on-background">Drag & Drop or Click to Browse</p>
-                  <p className="text-[10px] text-md-on-surface-variant mt-1.5 max-w-[220px] leading-normal">
-                    Must contain Product ID, Warehouse Locations, and Current Inventory Counts.
+                  <div className="h-12 w-12 bg-md-primary/10 text-md-primary rounded-2xl flex items-center justify-center mb-3">
+                    <Package className="h-6 w-6" />
+                  </div>
+                  <p className="text-xs font-black text-md-on-background">Drag & Drop or Click to Browse</p>
+                  <p className="text-[10px] text-md-on-surface-variant mt-2 max-w-[240px] leading-normal">
+                    CSV file containing Product SKU, Warehouse Location, and Current Stock Counts.
                   </p>
                 </>
               )}
@@ -302,7 +345,7 @@ export default function UploadPage() {
               {inventoryStatus === "uploading" && (
                 <>
                   <Loader2 className="h-10 w-10 text-md-primary animate-spin mb-3" />
-                  <p className="text-xs font-bold text-md-on-background">Uploading and parsing file...</p>
+                  <p className="text-xs font-bold text-md-on-background">Reading physical inventory counts...</p>
                 </>
               )}
 
@@ -310,13 +353,13 @@ export default function UploadPage() {
                 <div className="flex flex-col items-center">
                   <CheckCircle className="h-12 w-12 text-green-500 mb-3" />
                   <p className="text-xs font-black text-green-600 line-clamp-1">{inventoryFile?.name}</p>
-                  <p className="text-[10px] text-md-on-surface-variant mt-1">Successfully ingested and saved</p>
+                  <p className="text-[10px] text-md-on-surface-variant mt-1 font-semibold">Inventory data loaded and validated</p>
                   <button 
                     type="button" 
                     onClick={(e) => { e.stopPropagation(); clearInventory(); }}
-                    className="mt-4 flex gap-1 items-center text-[10px] text-red-500 hover:text-red-700 font-bold"
+                    className="mt-4 flex gap-1.5 items-center text-[10px] text-red-500 hover:text-red-700 font-bold border border-red-200/20 px-3 py-1.5 rounded-full hover:bg-red-50 bg-white shadow-sm transition-all"
                   >
-                    <Trash2 className="h-3.5 w-3.5" /> Remove File
+                    <Trash2 className="h-3.5 w-3.5" /> Remove
                   </button>
                 </div>
               )}
@@ -340,6 +383,35 @@ export default function UploadPage() {
           
         </div>
 
+        {/* Dynamic Demo Datasheets Download Card */}
+        <div className="border border-md-outline/10 bg-md-surface-container-low rounded-[24px] p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] uppercase font-bold text-md-primary flex items-center gap-1">
+              <Activity className="h-3.5 w-3.5 text-md-primary" /> Live Demo Resource
+            </span>
+            <h3 className="text-xs font-extrabold text-md-on-background">Test with Full-Fledged 1,000 Product Datasheets</h3>
+            <p className="text-[11px] text-md-on-surface-variant leading-relaxed">
+              We generated premium, high-fidelity sample supply chain datasheets representing 1,000 distinct product SKUs. Perfect for showing off overstocked distributors and smart factory feedback loops instantly.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2.5 shrink-0">
+            <a 
+              href="/demo_datasheets/sales_demand_1000.csv" 
+              download="sales_demand_1000.csv" 
+              className="inline-flex items-center gap-2 bg-white text-md-primary font-bold text-[11px] px-4 py-2.5 rounded-full border border-md-outline/10 shadow-sm hover:shadow hover:bg-md-primary/5 transition-all cursor-pointer"
+            >
+              <Download className="h-3.5 w-3.5 text-md-primary" /> Sales Data (1,000 SKUs)
+            </a>
+            <a 
+              href="/demo_datasheets/stock_inventory_1000.csv" 
+              download="stock_inventory_1000.csv" 
+              className="inline-flex items-center gap-2 bg-white text-md-primary font-bold text-[11px] px-4 py-2.5 rounded-full border border-md-outline/10 shadow-sm hover:shadow hover:bg-md-primary/5 transition-all cursor-pointer"
+            >
+              <Download className="h-3.5 w-3.5 text-md-primary" /> Stock Levels (2,000 Rows)
+            </a>
+          </div>
+        </div>
+
         {/* CTA Section */}
         <div className="flex flex-col items-center gap-4 border-t border-md-outline/10 pt-6">
           {processError && (
@@ -359,11 +431,13 @@ export default function UploadPage() {
                 <Loader2 className="h-4 w-4 animate-spin" /> Processing AI Rules Engine...
               </span>
             ) : (
-              "Process & Analyze Datasets"
+              <span className="flex gap-2 items-center">
+                Step 3: Align Stock & Predict Recommendations <ArrowRight className="h-4 w-4" />
+              </span>
             )}
           </Button>
-          <span className="text-[10px] text-md-on-surface-variant">
-            Process & Analyze compiles both tables, applies formulas, and outputs predictive recommendations.
+          <span className="text-[10px] text-md-on-surface-variant font-medium text-center">
+            Once clicked, the model matches both tables, flags spatial anomalies, and builds hold/resume recommendations cards.
           </span>
         </div>
 
