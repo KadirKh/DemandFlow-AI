@@ -54,13 +54,25 @@ def run_predictions(db: Session, user_id: int):
         # Gather metrics
         retail_sales = market_item.local_retail_sales if market_item else 0.0
         pending_orders = market_item.pending_shopkeeper_orders if market_item else 0.0
+        factory_production_metrics = market_item.factory_production_metrics if market_item else 0.0
         total_inventory = sum(inv.current_inventory_counts for inv in product_inventory)
         
+        # Determine manufacturer vs distributor stock
+        manufacturer_stock = 0.0
+        distributor_stock = 0.0
+        
+        for inv in product_inventory:
+            loc = inv.warehouse_location.lower()
+            if "distributor" in loc or "beta" in loc or "depot" in loc:
+                distributor_stock += inv.current_inventory_counts
+            else:
+                manufacturer_stock += inv.current_inventory_counts
+                
         # 1. AI Math & Rules Logic
         total_local_demand = retail_sales + pending_orders
         net_position_balance = total_local_demand - total_inventory
         
-        logger.debug(f"Product {pid}: Demand={total_local_demand}, Inventory={total_inventory}, Net Balance={net_position_balance}")
+        logger.debug(f"Product {pid}: Demand={total_local_demand}, Inventory={total_inventory}, Manufacturer Stock={manufacturer_stock}, Distributor Stock={distributor_stock}")
         
         # 2. Evaluate rules and generate cards
         
@@ -73,30 +85,19 @@ def run_predictions(db: Session, user_id: int):
             # If one warehouse has stock out / critical low and another has a surplus
             if min_inv <= 5 and max_inv >= 30:
                 has_spatial_anomaly = True
+        # Determine if we have any distributor warehouse in the product inventory list
+        has_distributor = any(
+            ("distributor" in inv.warehouse_location.lower() or 
+             "beta" in inv.warehouse_location.lower() or 
+             "depot" in inv.warehouse_location.lower())
+            for inv in product_inventory
+        )
 
-        # Rule A: Net Position Balance > 0 -> Production Deficit
-        if net_position_balance > 0:
-            rec_type = "production_deficit"
-            score = round(min(1.0, net_position_balance / max(1.0, total_local_demand)), 2)
-            explanation = f"ALERT: PRODUCTION DEFICIT. Total Local Demand ({int(total_local_demand)} units) exceeds inventory ({int(total_inventory)} units) for SKU {pid}. Action: Increase Production by 15%."
-            
-            rec = Recommendation(
-                user_id=user_id,
-                type=rec_type,
-                entity_id=pid,
-                score=score,
-                explanation=explanation,
-                action_status="pending",
-                active=True
-            )
-            db.add(rec)
-            generated_recommendations.append(rec)
-            
-        # Rule B: Overstocked and Net Position Balance <= 0 -> Balanced Stock / Hold Production
-        else:
+        # Rule A: Distributor is overstocked (>80% of stock capacity, e.g. >= 80 units) -> Hold Production to save money & reduce burden
+        if has_distributor and distributor_stock >= 80.0:
             rec_type = "balanced_stock"
-            score = 1.0
-            explanation = f"ALERT: Balanced Stock. Total Local Demand ({int(total_local_demand)} units) is fully covered by on-hand inventory ({int(total_inventory)} units) for SKU {pid}. Action: Hold Production."
+            score = 0.95
+            explanation = f"HOLD PRODUCTION: Distributor has high stock level ({int(distributor_stock)} units, >80% unsold) for SKU {pid}. Manufacturer holds production to avoid over-allocation, saving money and reducing gas/energy burn."
             
             rec = Recommendation(
                 user_id=user_id,
@@ -110,7 +111,48 @@ def run_predictions(db: Session, user_id: int):
             db.add(rec)
             generated_recommendations.append(rec)
 
-        # Rule C: Spatial stock anomalies -> Regional Mismatch
+        # Rule B: Distributor inventory is low (<=30% capacity, e.g. <= 30 units) -> Resume Production to maintain product flow
+        elif has_distributor and distributor_stock <= 30.0:
+            rec_type = "production_deficit"
+            score = round(min(1.0, (100.0 - distributor_stock) / 100.0), 2)
+            explanation = f"RESUME PRODUCTION: Distributor stock is low ({int(distributor_stock)} units remaining, >=70% sold) for SKU {pid}. Manufacturer resumes production to sustain active supply flow with minimal holding burden."
+            
+            rec = Recommendation(
+                user_id=user_id,
+                type=rec_type,
+                entity_id=pid,
+                score=score,
+                explanation=explanation,
+                action_status="pending",
+                active=True
+            )
+            db.add(rec)
+            generated_recommendations.append(rec)
+
+        # Rule C: Fallback Net Position Balance
+        else:
+            if net_position_balance > 0:
+                rec_type = "production_deficit"
+                score = round(min(1.0, net_position_balance / max(1.0, total_local_demand)), 2)
+                explanation = f"ALERT: PRODUCTION DEFICIT. Total Local Demand ({int(total_local_demand)} units) exceeds inventory ({int(total_inventory)} units) for SKU {pid}. Action: Resume Production by 15%."
+            else:
+                rec_type = "balanced_stock"
+                score = 1.0
+                explanation = f"ALERT: Balanced Stock. Total Local Demand ({int(total_local_demand)} units) is fully covered by on-hand inventory ({int(total_inventory)} units) for SKU {pid}. Action: Hold Production."
+            
+            rec = Recommendation(
+                user_id=user_id,
+                type=rec_type,
+                entity_id=pid,
+                score=score,
+                explanation=explanation,
+                action_status="pending",
+                active=True
+            )
+            db.add(rec)
+            generated_recommendations.append(rec)
+
+        # Rule D: Spatial stock anomalies or regional mismatch
         if has_spatial_anomaly:
             # Recommend moving stock from max inventory warehouse to min inventory warehouse
             wh_max = max(product_inventory, key=lambda x: x.current_inventory_counts)
@@ -127,6 +169,24 @@ def run_predictions(db: Session, user_id: int):
                 score=score,
                 explanation=explanation,
                 action_status="pending_review",  # Load into column 2 ("undergoing structural review")
+                active=True
+            )
+            db.add(rec)
+            generated_recommendations.append(rec)
+
+        # Rule E: Quality / Rejection Alert (If production is high but retail sales are less than 10%)
+        if factory_production_metrics > 50.0 and retail_sales > 0 and (retail_sales / factory_production_metrics) < 0.1:
+            rec_type = "regional_mismatch" # Gray/amber style for warning
+            score = 0.90
+            explanation = f"QUALITY ALERT: SKU {pid} shows high rejection rate. Production is high ({int(factory_production_metrics)} units) but retail sales are very low ({int(retail_sales)} units), suggesting quality issues or poor reviews. Review quality control parameters."
+            
+            rec = Recommendation(
+                user_id=user_id,
+                type=rec_type,
+                entity_id=pid,
+                score=score,
+                explanation=explanation,
+                action_status="pending_review",
                 active=True
             )
             db.add(rec)

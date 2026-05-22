@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 from ..database import get_db
 from ..models import User, MarketData, InventoryData
 from ..security import create_access_token, get_current_user
+from ..services.predictor import run_predictions
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -17,6 +18,7 @@ class RegisterRequest(BaseModel):
     email: str
     password: str = Field(min_length=8)
     role: str = "manufacturer"
+    seed: bool = True
 
     @field_validator("role")
     @classmethod
@@ -67,7 +69,7 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 
 @router.post("/register", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
-    """Register a new user and return JWT token"""
+    """Register a new user, restore their default workspace data, and return JWT token"""
     existing_user = db.query(User).filter(User.email == request.email).first()
     if existing_user:
         raise HTTPException(
@@ -85,6 +87,78 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    if request.seed:
+        # RESTORE DATA: Seed default Manufacturer-Distributor coordination records for this new user
+        default_market = [
+            MarketData(
+                user_id=user.id,
+                product_id="SKU-999",
+                factory_production_metrics=100.0,
+                local_retail_sales=50.0,
+                pending_shopkeeper_orders=20.0
+            ),
+            MarketData(
+                user_id=user.id,
+                product_id="SKU-888",
+                factory_production_metrics=20.0,
+                local_retail_sales=5.0,
+                pending_shopkeeper_orders=2.0
+            ),
+            MarketData(
+                user_id=user.id,
+                product_id="SKU-777",
+                factory_production_metrics=90.0,
+                local_retail_sales=4.0,  # High rejection rate warning trigger (Rule E)
+                pending_shopkeeper_orders=5.0
+            )
+        ]
+
+        default_inventory = [
+            InventoryData(
+                user_id=user.id,
+                product_id="SKU-999",
+                warehouse_location="Manufacturer Warehouse Alpha",
+                current_inventory_counts=120.0
+            ),
+            InventoryData(
+                user_id=user.id,
+                product_id="SKU-999",
+                warehouse_location="Distributor Depot Beta",
+                current_inventory_counts=95.0  # Overstocked (>80% unsold) -> Triggers Hold Production (Rule A)
+            ),
+            InventoryData(
+                user_id=user.id,
+                product_id="SKU-888",
+                warehouse_location="Manufacturer Warehouse Alpha",
+                current_inventory_counts=150.0
+            ),
+            InventoryData(
+                user_id=user.id,
+                product_id="SKU-888",
+                warehouse_location="Distributor Depot Beta",
+                current_inventory_counts=22.0  # Low inventory (<=30% capacity) -> Triggers Resume Production (Rule B)
+            ),
+            InventoryData(
+                user_id=user.id,
+                product_id="SKU-777",
+                warehouse_location="Manufacturer Warehouse Alpha",
+                current_inventory_counts=40.0
+            ),
+            InventoryData(
+                user_id=user.id,
+                product_id="SKU-777",
+                warehouse_location="Distributor Depot Beta",
+                current_inventory_counts=5.0  # Low inventory + High rejection rate
+            )
+        ]
+
+        db.add_all(default_market)
+        db.add_all(default_inventory)
+        db.commit()
+
+        # Pre-calculate predictive recommendations immediately using AI rules engine
+        run_predictions(db, user.id)
 
     token_data = {
         "user_id": user.id,

@@ -68,7 +68,8 @@ def test_journey():
         data={
             "email": test_email,
             "password": test_password,
-            "role": "manufacturer"
+            "role": "manufacturer",
+            "seed": False
         }
     )
     
