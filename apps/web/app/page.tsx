@@ -160,108 +160,224 @@ export default function Home() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen w-full relative flex items-center justify-center p-4 overflow-hidden">
+      <main className="min-h-screen w-full relative flex flex-col md:flex-row overflow-hidden bg-md-background">
         <GlowOverlay />
         
-        <Card className="w-full max-w-md flex flex-col gap-6 p-8 relative shadow-lg">
-          {/* Logo and title */}
-          <div className="flex flex-col items-center gap-2 text-center select-none">
-            <div className="h-14 w-14 bg-md-primary text-white rounded-[20px] flex items-center justify-center shadow-md animate-pulse">
-              <Boxes className="h-8 w-8" />
+        {/* Style block for interactive SVG supply flow */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes flow-dash {
+            to {
+              stroke-dashoffset: -40;
+            }
+          }
+          .animate-flow-dash {
+            animation: flow-dash 3s linear infinite;
+          }
+        `}} />
+
+        {/* Left Side: Modern Animated Supply Chain Dashboard Illustration (Desktop only) */}
+        <div className="hidden md:flex md:w-1/2 lg:w-[55%] relative flex-col justify-between p-12 overflow-hidden bg-gradient-to-br from-[#0F0C1B] to-[#15102A] border-r border-md-outline/10 text-white select-none">
+          {/* Subtle grid background */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
+            backgroundImage: "radial-gradient(circle, rgba(103, 80, 164, 0.25) 1px, transparent 1px)",
+            backgroundSize: "20px 20px"
+          }} />
+          
+          {/* Soft ambient glowing shapes */}
+          <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-[#A255FF]/10 blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#6750A4]/15 blur-[120px] pointer-events-none" />
+
+          {/* Header */}
+          <div className="flex items-center gap-3 z-10">
+            <div className="h-10 w-10 bg-md-primary rounded-xl flex items-center justify-center shadow-md">
+              <Boxes className="h-5.5 w-5.5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-md-on-background mt-2">DemandFlow AI</h1>
-            <p className="text-xs text-md-on-surface-variant max-w-xs leading-relaxed">
-              Log in to access supply chain demand predictions, inventory controls, and transport lane logs.
-            </p>
+            <div>
+              <span className="text-sm font-black tracking-tight text-white block">DemandFlow AI</span>
+              <span className="block text-[9px] uppercase font-bold tracking-widest text-[#BFA5FF]">Inventory Intelligence</span>
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="absolute top-6 right-6 h-9 w-9 rounded-full border border-md-outline/20 bg-md-surface-container-low text-md-on-surface-variant flex items-center justify-center hover:bg-md-primary/10"
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
+          {/* Animated SVG Visual Panel */}
+          <div className="w-full flex flex-col items-center justify-center my-auto z-10 gap-8">
+            <div className="w-full max-w-lg aspect-[800/450] bg-black/30 rounded-2xl border border-white/5 p-6 backdrop-blur-md shadow-2xl relative">
+              <div className="absolute top-4 left-4 flex gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+              </div>
+              <div className="absolute top-4 right-4 text-[9px] font-mono text-[#A29EBA] bg-white/5 px-2 py-0.5 rounded">
+                live_optimization_pipeline.sh
+              </div>
+              
+              <svg viewBox="0 0 500 250" className="w-full h-full">
+                <defs>
+                  <linearGradient id="path-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#6750A4" stopOpacity="0.2" />
+                    <stop offset="50%" stopColor="#A255FF" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#6750A4" stopOpacity="0.2" />
+                  </linearGradient>
+                  
+                  <linearGradient id="area-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#A255FF" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#A255FF" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <div className="relative">
-              <Input
-                id="email"
-                type="text"
-                label="User ID"
-                placeholder="Enter User ID"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+                {/* Tech Grid Lines */}
+                <line x1="50" y1="40" x2="450" y2="40" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+                <line x1="50" y1="90" x2="450" y2="90" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+                <line x1="50" y1="140" x2="450" y2="140" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+                <line x1="50" y1="190" x2="450" y2="190" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+
+                {/* Simulated forecast graph curves */}
+                <path d="M 60,220 L 60,170 Q 120,130 180,180 T 300,120 Q 360,80 440,150 L 440,220 Z" fill="url(#area-grad)" opacity="0.4" />
+                <path d="M 60,170 Q 120,130 180,180 T 300,120 Q 360,80 440,150" fill="none" stroke="#A255FF" strokeWidth="1.5" opacity="0.5" />
+
+                {/* Animated supply pathways */}
+                <path d="M 60,140 Q 150,50 250,140 T 440,140" fill="none" stroke="url(#path-grad)" strokeWidth="3" />
+                <path d="M 60,140 Q 150,50 250,140 T 440,140" fill="none" stroke="#BFA5FF" strokeWidth="2.5" strokeDasharray="10 30" className="animate-flow-dash" />
+                <path d="M 60,140 Q 150,210 250,140 T 440,140" fill="none" stroke="rgba(162, 85, 255, 0.15)" strokeWidth="2" strokeDasharray="5 5" />
+
+                {/* Pulsing visual nodes */}
+                <circle cx="60" cy="140" r="5" fill="#6750A4" className="animate-pulse" />
+                <circle cx="150" cy="95" r="5" fill="#BFA5FF" className="animate-pulse" />
+                <circle cx="250" cy="140" r="6" fill="#FFFFFF" className="animate-pulse" />
+                <circle cx="345" cy="115" r="5" fill="#BFA5FF" className="animate-pulse" />
+                <circle cx="440" cy="140" r="5" fill="#6750A4" className="animate-pulse" />
+
+                {/* Node descriptions */}
+                <text x="60" y="160" fill="#A29EBA" fontSize="8" fontFamily="monospace" textAnchor="middle">Ingest</text>
+                <text x="150" y="80" fill="#A29EBA" fontSize="8" fontFamily="monospace" textAnchor="middle">Features</text>
+                <text x="250" y="160" fill="#FFFFFF" fontSize="8" fontFamily="monospace" textAnchor="middle">AI Engine</text>
+                <text x="345" y="98" fill="#A29EBA" fontSize="8" fontFamily="monospace" textAnchor="middle">Forecast</text>
+                <text x="440" y="160" fill="#A29EBA" fontSize="8" fontFamily="monospace" textAnchor="middle">Optimized</text>
+              </svg>
             </div>
             
-            <div className="relative">
-              <Input
-                id="password"
-                type="password"
-                label="Security Key / Password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <div className="flex justify-end mt-1 px-1">
-                <button
-                  type="button"
-                  onClick={() => alert("Please contact system administrator to reset security keys.")}
-                  className="text-[10px] text-md-primary font-semibold hover:underline"
-                >
-                  Forgot Password?
-                </button>
+            <div className="flex flex-col gap-2 max-w-sm text-center">
+              <h3 className="text-lg font-bold tracking-tight text-white">Autonomous Supply Chain Predictions</h3>
+              <p className="text-xs text-[#A29EBA] leading-relaxed">
+                Eliminate manual overstocking overheads and defend against retail order stockouts using seamless ML optimization recommendations.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer Info */}
+          <div className="flex justify-between items-center z-10 text-[9px] text-[#A29EBA]/40 font-mono">
+            <span>Powered by Scikit-Learn & Next.js</span>
+            <span>v2.0.26</span>
+          </div>
+        </div>
+
+        {/* Right Side: Elegant Center-Aligned Login Card */}
+        <div className="w-full md:w-1/2 lg:w-[45%] flex items-center justify-center p-6 relative">
+          <Card className="w-full max-w-sm flex flex-col gap-6 p-8 relative shadow-lg bg-md-surface-container/30 backdrop-blur-md border border-md-outline/10">
+            {/* Mobile Header (Only visible on screens without the left visual pane) */}
+            <div className="flex flex-col items-center gap-2 text-center select-none md:hidden">
+              <div className="h-12 w-12 bg-md-primary text-white rounded-[16px] flex items-center justify-center shadow-md animate-pulse">
+                <Boxes className="h-7 w-7" />
               </div>
+              <h1 className="text-xl font-bold tracking-tight text-md-on-background mt-2">DemandFlow AI</h1>
+              <p className="text-[10px] text-md-on-surface-variant max-w-xs leading-relaxed">
+                Autonomous Supply Chain & Inventory Balancing Engine
+              </p>
             </div>
 
+            {/* Form Title & Introduction */}
+            <div className="flex flex-col gap-1.5 select-none">
+              <h2 className="text-xl font-black text-md-on-background tracking-tight">Sign In</h2>
+              <p className="text-xs text-md-on-surface-variant leading-relaxed">
+                Access your forecasting workspace & inventory decisions console.
+              </p>
+            </div>
 
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-bold flex gap-2 items-center">
-                <Shield className="h-4 w-4 shrink-0" />
-                <span>{error}</span>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="absolute top-6 right-6 h-9 w-9 rounded-full border border-md-outline/20 bg-md-surface-container-low text-md-on-surface-variant flex items-center justify-center hover:bg-md-primary/10 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+
+            <form onSubmit={handleLogin} className="flex flex-col gap-4">
+              <div className="relative">
+                <Input
+                  id="email"
+                  type="text"
+                  label="User ID"
+                  placeholder="Enter User ID"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </div>
-            )}
+              
+              <div className="relative">
+                <Input
+                  id="password"
+                  type="password"
+                  label="Security Key / Password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <div className="flex justify-end mt-1 px-1">
+                  <button
+                    type="button"
+                    onClick={() => alert("Please contact system administrator to reset security keys.")}
+                    className="text-[10px] text-md-primary font-bold hover:underline"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+              </div>
 
-            <Button type="submit" disabled={loading} className="w-full mt-2 h-11 text-xs font-bold">
-              {loading ? "Authorizing..." : "Sign In to Console"}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-bold flex gap-2 items-center">
+                  <Shield className="h-4 w-4 shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <Button type="submit" disabled={loading} className="w-full mt-2 h-11 text-xs font-bold md-state-hover">
+                {loading ? "Authorizing..." : "Sign In to Console"}
+              </Button>
+            </form>
+
+            <div className="text-[11px] text-md-on-surface-variant text-center select-none">
+              Need an account?{" "}
+              <Link href="/signup" className="text-md-primary font-bold hover:underline">
+                Create one
+              </Link>
+            </div>
+
+            {/* Custom styled visual Divider */}
+            <div className="flex items-center gap-3 select-none py-1">
+              <div className="h-px bg-md-outline/10 flex-1" />
+              <span className="text-[9px] font-bold text-md-on-surface-variant/40 uppercase tracking-widest">or continue with</span>
+              <div className="h-px bg-md-outline/10 flex-1" />
+            </div>
+
+            {/* Google Popup OAuth */}
+            <Button 
+              type="button" 
+              onClick={handleGoogleLogin} 
+              disabled={loading || googleLoading} 
+              className="w-full h-11 text-xs font-bold flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm transition-colors duration-200"
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" className="shrink-0" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+              </svg>
+              <span>Continue with Google</span>
             </Button>
-          </form>
-
-          <div className="text-[11px] text-md-on-surface-variant text-center">
-            Need an account?{" "}
-            <Link href="/signup" className="text-md-primary font-bold hover:underline">
-              Create one
-            </Link>
-          </div>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 select-none py-1">
-            <div className="h-px bg-md-outline/10 flex-1" />
-            <span className="text-[9px] font-bold text-md-on-surface-variant/40 uppercase tracking-widest">or sign in with</span>
-            <div className="h-px bg-md-outline/10 flex-1" />
-          </div>
-
-          {/* Google Sign-In */}
-          <Button 
-            type="button" 
-            onClick={handleGoogleLogin} 
-            disabled={loading || googleLoading} 
-            className="w-full h-11 text-xs font-bold flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm transition-colors duration-200"
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" className="shrink-0" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
-            </svg>
-            <span>Continue with Google</span>
-          </Button>
-
-        </Card>
+          </Card>
+        </div>
       </main>
     );
   }
