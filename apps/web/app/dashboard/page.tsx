@@ -963,7 +963,7 @@ export default function DashboardPage() {
                       The Reorder Point (ROP) is the specific level of inventory which triggers action to replenish that product SKU. It is calculated by multiplying lead-time demand by target buffers.
                     </p>
                     <p className="text-xs text-md-on-surface-variant leading-relaxed">
-                      Formula: $\text{ROP} = (\text{Average Daily Sales} \times \text{Supplier Lead Time in Days}) + \text{Safety Stock Buffer}$. When physical levels cross below ROP, the model issues warnings to prevent delivery failures.
+                      Formula: ROP = (Average Daily Sales x Supplier Lead Time in Days) + Safety Stock Buffer. When physical levels cross below ROP, the model issues warnings to prevent delivery failures.
                     </p>
                   </div>
                 )}
