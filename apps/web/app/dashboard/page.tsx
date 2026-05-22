@@ -245,14 +245,20 @@ export default function DashboardPage() {
   const getCol3 = () => recommendations.filter((r) => r.action_status === "approved" || r.action_status === "rejected");
 
   // Indian Supply Chain & Factory Telemetry Counters
-  const approvedHoldsCount = recommendations.filter(
-    (r) => r.action_status === "approved" && r.explanation.toLowerCase().includes("hold")
+  // Count ALL active hold-type recommendations (pending + approved) for live projected savings
+  const allHoldsCount = recommendations.filter(
+    (r) => r.type === "balanced_stock" || r.explanation.toLowerCase().includes("hold production")
   ).length;
+  const confirmedHoldsCount = recommendations.filter(
+    (r) => r.action_status === "approved" && (r.type === "balanced_stock" || r.explanation.toLowerCase().includes("hold production"))
+  ).length;
+  // Use all holds for projections (confirmed are a subset shown in badge)
+  const holdsForCalc = allHoldsCount;
 
-  const totalWorkingCapitalSaved = approvedHoldsCount * workingCapitalFactor * 30;
-  const totalCapacityHoursGained = Math.round(approvedHoldsCount * machineryHoursGained * 30 * 10) / 10;
-  const totalStorageSaved = approvedHoldsCount * godownStorageFactor * 30;
-  const totalCreditRiskSaved = approvedHoldsCount * creditRiskFactor * 30;
+  const totalWorkingCapitalSaved = holdsForCalc * workingCapitalFactor * 30;
+  const totalCapacityHoursGained = Math.round(holdsForCalc * machineryHoursGained * 30 * 10) / 10;
+  const totalStorageSaved = holdsForCalc * godownStorageFactor * 30;
+  const totalCreditRiskSaved = holdsForCalc * creditRiskFactor * 30;
 
   // Generate 30-day custom forecasting datasets for SKU-999, SKU-888, SKU-777 in Research Lab
   const getResearchChartData = (sku: string, surge: number) => {
@@ -448,42 +454,78 @@ export default function DashboardPage() {
             {/* Indian Market Supply Chain Telemetry Counters */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
               <Card className="flex flex-col gap-1 relative overflow-hidden group border-md-primary/10">
-                <div className="h-9 w-9 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <IndianRupee className="h-4.5 w-4.5 text-emerald-600" />
+                <div className="flex items-center justify-between mb-1">
+                  <div className="h-9 w-9 bg-emerald-100 rounded-full flex items-center justify-center shadow-sm">
+                    <IndianRupee className="h-4.5 w-4.5 text-emerald-600" />
+                  </div>
+                  {allHoldsCount > 0 && (
+                    <span className="text-[9px] font-black bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                      {confirmedHoldsCount}/{allHoldsCount} confirmed
+                    </span>
+                  )}
                 </div>
                 <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Working Capital Freed (30d)</span>
                 <span className="text-2xl font-black text-md-on-background mt-0.5">₹{totalWorkingCapitalSaved.toLocaleString('en-IN')}</span>
-                <p className="text-[9px] text-emerald-600 font-bold mt-1">Freed from overproduced inventory</p>
+                <p className="text-[9px] text-emerald-600 font-bold mt-1">
+                  {allHoldsCount === 0 ? "Upload CSV to see projections" : `${allHoldsCount} hold signal${allHoldsCount > 1 ? "s" : ""} × ₹${workingCapitalFactor.toLocaleString()} / day`}
+                </p>
                 <div className="absolute right-0 bottom-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
 
               <Card className="flex flex-col gap-1 relative overflow-hidden group">
-                <div className="h-9 w-9 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <Shuffle className="h-4.5 w-4.5 text-indigo-600" />
+                <div className="flex items-center justify-between mb-1">
+                  <div className="h-9 w-9 bg-indigo-100 rounded-full flex items-center justify-center shadow-sm">
+                    <Shuffle className="h-4.5 w-4.5 text-indigo-600" />
+                  </div>
+                  {allHoldsCount > 0 && (
+                    <span className="text-[9px] font-black bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">
+                      {allHoldsCount} active
+                    </span>
+                  )}
                 </div>
                 <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Capacity Shift Gain (30d)</span>
                 <span className="text-2xl font-black text-md-on-background mt-0.5">{totalCapacityHoursGained} Hours</span>
-                <p className="text-[9px] text-indigo-500 font-bold mt-1">Machine hours reallocated to high demand</p>
+                <p className="text-[9px] text-indigo-500 font-bold mt-1">
+                  {allHoldsCount === 0 ? "Upload CSV to see projections" : `${allHoldsCount} SKU${allHoldsCount > 1 ? "s" : ""} × ${machineryHoursGained}h/day freed`}
+                </p>
                 <div className="absolute right-0 bottom-0 w-16 h-16 bg-indigo-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
 
               <Card className="flex flex-col gap-1 relative overflow-hidden group">
-                <div className="h-9 w-9 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <Boxes className="h-4.5 w-4.5 text-blue-600" />
+                <div className="flex items-center justify-between mb-1">
+                  <div className="h-9 w-9 bg-blue-100 rounded-full flex items-center justify-center shadow-sm">
+                    <Boxes className="h-4.5 w-4.5 text-blue-600" />
+                  </div>
+                  {allHoldsCount > 0 && (
+                    <span className="text-[9px] font-black bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                      projected
+                    </span>
+                  )}
                 </div>
                 <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Godown Storage Savings</span>
                 <span className="text-2xl font-black text-md-on-background mt-0.5">₹{totalStorageSaved.toLocaleString('en-IN')}</span>
-                <p className="text-[9px] text-blue-600 font-bold mt-1">Reduced distributor stock burden</p>
+                <p className="text-[9px] text-blue-600 font-bold mt-1">
+                  {allHoldsCount === 0 ? "Upload CSV to see projections" : `${allHoldsCount} SKU${allHoldsCount > 1 ? "s" : ""} × ₹${godownStorageFactor.toLocaleString()} / day`}
+                </p>
                 <div className="absolute right-0 bottom-0 w-16 h-16 bg-blue-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
 
               <Card className="flex flex-col gap-1 relative overflow-hidden group">
-                <div className="h-9 w-9 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <ShieldAlert className="h-4.5 w-4.5 text-amber-600" />
+                <div className="flex items-center justify-between mb-1">
+                  <div className="h-9 w-9 bg-amber-100 rounded-full flex items-center justify-center shadow-sm">
+                    <ShieldAlert className="h-4.5 w-4.5 text-amber-600" />
+                  </div>
+                  {allHoldsCount > 0 && (
+                    <span className="text-[9px] font-black bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                      projected
+                    </span>
+                  )}
                 </div>
                 <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Credit Default Risk Saved</span>
                 <span className="text-2xl font-black text-md-on-background mt-0.5">₹{totalCreditRiskSaved.toLocaleString('en-IN')}</span>
-                <p className="text-[9px] text-amber-500 font-bold mt-1">Mitigated payment default lockup</p>
+                <p className="text-[9px] text-amber-500 font-bold mt-1">
+                  {allHoldsCount === 0 ? "Upload CSV to see projections" : `${allHoldsCount} hold${allHoldsCount > 1 ? "s" : ""} × ₹${creditRiskFactor.toLocaleString()} / day`}
+                </p>
                 <div className="absolute right-0 bottom-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
             </div>
@@ -495,53 +537,78 @@ export default function DashboardPage() {
               <Card className="lg:col-span-2 flex flex-col gap-4">
                 <div className="flex justify-between items-center pb-2 border-b border-md-outline/5">
                   <h3 className="text-xs font-black uppercase text-md-on-surface-variant tracking-wider">Live Inventory Discrepancy Map</h3>
-                  <span className="text-[10px] font-bold text-md-primary">3 Warehouses Active</span>
+                  <span className="text-[10px] font-bold text-md-primary">{recommendations.length} Active Signals</span>
                 </div>
-                
+
                 <div className="flex flex-col gap-5 py-2">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex justify-between text-[11px] font-bold text-md-on-background">
-                      <span>SKU-999 (Laptop Charger) - Distributor Stockout Danger</span>
-                      <span className="text-red-500">90 / 100 Capacity (Surplus Hold)</span>
+                  {recommendations.length === 0 ? (
+                    <div className="text-center py-8 text-md-on-surface-variant text-xs">
+                      <Upload className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                      <p className="font-semibold">No data yet — upload your CSV files in Ingest Studio to see live inventory signals.</p>
                     </div>
-                    <div className="w-full h-3 bg-md-surface-container-low rounded-full overflow-hidden border border-md-outline/5">
-                      <div className="bg-red-500 h-full rounded-full transition-all duration-300" style={{ width: "90%" }}></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-md-on-surface-variant">
-                      <span>Manufacturer stock: 120 units (Plenty)</span>
-                      <span>Action status: Pausing Manufacturing lines</span>
-                    </div>
-                  </div>
+                  ) : (
+                    recommendations.slice(0, 6).map((rec) => {
+                      const isHold    = rec.explanation.toLowerCase().includes("hold");
+                      const isResume  = rec.type === "production_deficit";
+                      const isMismatch = rec.type === "regional_mismatch";
 
-                  <div className="flex flex-col gap-2">
-                    <div className="flex justify-between text-[11px] font-bold text-md-on-background">
-                      <span>SKU-888 (Mechanical Keyboard) - Stock Deficit Trigger</span>
-                      <span className="text-green-600">25 / 100 Capacity (Resuming Active)</span>
-                    </div>
-                    <div className="w-full h-3 bg-md-surface-container-low rounded-full overflow-hidden border border-md-outline/5">
-                      <div className="bg-green-500 h-full rounded-full transition-all duration-300" style={{ width: "25%" }}></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-md-on-surface-variant">
-                      <span>Manufacturer stock: 150 units</span>
-                      <span>Action status: Manufacturing active at 100% load</span>
-                    </div>
-                  </div>
+                      // Parse distributor stock number from explanation if present
+                      const stockMatch = rec.explanation.match(/(\d+)\s*units/i);
+                      const stockUnits = stockMatch ? parseInt(stockMatch[1]) : null;
+                      const capacityPct = stockUnits !== null ? Math.min(100, Math.round(stockUnits)) : (isHold ? 88 : isResume ? 22 : 5);
 
-                  <div className="flex flex-col gap-2">
-                    <div className="flex justify-between text-[11px] font-bold text-md-on-background">
-                      <span>SKU-777 (Cargo Pants) - Structural Defect Warning</span>
-                      <span className="text-amber-500">5 / 100 Capacity (Review Needed)</span>
-                    </div>
-                    <div className="w-full h-3 bg-md-surface-container-low rounded-full overflow-hidden border border-md-outline/5">
-                      <div className="bg-amber-500 h-full rounded-full transition-all duration-300" style={{ width: "5%" }}></div>
-                    </div>
-                    <div className="flex justify-between text-[9px] text-md-on-surface-variant">
-                      <span>Manufacturer stock: 40 units</span>
-                      <span>Action status: Flagged for high defect ratios</span>
-                    </div>
-                  </div>
+                      // Color logic
+                      const barColor  = isHold ? "bg-red-500" : isResume ? "bg-green-500" : "bg-amber-500";
+                      const labelColor = isHold ? "text-red-500" : isResume ? "text-green-600" : "text-amber-500";
+                      const statusLabel = isHold
+                        ? `${capacityPct} / 100 Capacity (Surplus Hold)`
+                        : isResume
+                        ? `${capacityPct} / 100 Capacity (Resuming Active)`
+                        : `${capacityPct} / 100 Capacity (Review Needed)`;
+
+                      // Extract a human-readable product label from entity_id
+                      const skuLabel = rec.entity_id;
+
+                      // Extract action text from explanation first sentence
+                      const actionShort = rec.explanation.split(".")[0].replace(/ALERT:|ALERT/i, "").trim();
+
+                      // Status badge text
+                      const actionStatus =
+                        rec.action_status === "approved"
+                          ? "✓ Approved by team"
+                          : rec.action_status === "rejected"
+                          ? "✗ Rejected"
+                          : rec.action_status === "pending_review"
+                          ? "Under structural review"
+                          : isHold
+                          ? "Pausing manufacturing lines"
+                          : isResume
+                          ? "Manufacturing active at 100% load"
+                          : "Flagged for review";
+
+                      return (
+                        <div key={rec.id} className="flex flex-col gap-2">
+                          <div className="flex justify-between text-[11px] font-bold text-md-on-background">
+                            <span>{skuLabel}</span>
+                            <span className={labelColor}>{statusLabel}</span>
+                          </div>
+                          <div className="w-full h-3 bg-md-surface-container-low rounded-full overflow-hidden border border-md-outline/5">
+                            <div
+                              className={`${barColor} h-full rounded-full transition-all duration-500`}
+                              style={{ width: `${capacityPct}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-[9px] text-md-on-surface-variant">
+                            <span className="truncate max-w-[60%]">{actionShort}</span>
+                            <span>Action: {actionStatus}</span>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </Card>
+
 
               {/* Dynamic Surge Simulator */}
               <Card className="flex flex-col justify-between">
@@ -581,9 +648,15 @@ export default function DashboardPage() {
                 <div className="text-[10px] text-md-primary bg-md-primary/5 rounded-[12px] p-3 border border-md-primary/10 leading-relaxed font-semibold">
                   <strong>Simulated Impact:</strong> {
                     surgeSim > 20 
-                      ? "Critical Alert: Demand surge spikes distributor depleted lines! Safety stock exhausted for mechanical keyboards (SKU-888)."
+                      ? (() => {
+                          const resumeSku = recommendations.find(r => r.type === "production_deficit")?.entity_id;
+                          return `Critical Alert: Demand surge spikes distributor depleted lines! Safety stock exhausted for ${resumeSku ? resumeSku : "low-inventory SKUs"}. Resume production immediately.`;
+                        })()
                       : surgeSim < -20
-                      ? "Caution: Severe slowdown increases overstocked holdings. Charger lines (SKU-999) must extend hold duration to avoid excess fuel burn."
+                      ? (() => {
+                          const holdSku = recommendations.find(r => r.explanation.toLowerCase().includes("hold"))?.entity_id;
+                          return `Caution: Severe slowdown increases overstocked holdings. ${holdSku ? `${holdSku} lines` : "Hold-flagged SKU lines"} must extend hold duration to protect cash flow.`;
+                        })()
                       : "Standard operating buffers fully absorb simulated volatility safely."
                   }
                 </div>
