@@ -36,7 +36,9 @@ import {
   Sparkles,
   Compass,
   ArrowUpRight,
-  FileSpreadsheet
+  FileSpreadsheet,
+  IndianRupee,
+  Shuffle
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -76,11 +78,13 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   
-  // Tuning Constants State
-  const [machineryBurn, setMachineryBurn] = useState(4.2); // gallons per day per active SKU
-  const [carbonSaved, setCarbonSaved] = useState(11.4); // kg of CO2 saved per paused active SKU day
-  const [safetyBuffer, setSafetyBuffer] = useState(25); // Target safety units
-  
+  // Indian supply chain constants in state
+  const [machineryHoursGained, setMachineryHoursGained] = useState(8.5); // freed machine hours reallocated per paused SKU per day
+  const [workingCapitalFactor, setWorkingCapitalFactor] = useState(15000); // liquid cash (₹) freed per paused active SKU day
+  const [creditRiskFactor, setCreditRiskFactor] = useState(25000); // payment default risk prevented (₹) per day
+  const [godownStorageFactor, setGodownStorageFactor] = useState(10500); // godown storage rent/charges saved (₹) per day
+  const [safetyBuffer, setSafetyBuffer] = useState(25); // global target safety buffer units
+
   // Interactive surge demand simulation
   const [surgeSim, setSurgeSim] = useState(0); // -50% to +50% surge
 
@@ -240,14 +244,15 @@ export default function DashboardPage() {
   const getCol2 = () => recommendations.filter((r) => r.action_status === "pending_review");
   const getCol3 = () => recommendations.filter((r) => r.action_status === "approved" || r.action_status === "rejected");
 
-  // Environmental counters
+  // Indian Supply Chain & Factory Telemetry Counters
   const approvedHoldsCount = recommendations.filter(
     (r) => r.action_status === "approved" && r.explanation.toLowerCase().includes("hold")
   ).length;
 
-  const totalFuelSaved = Math.round(approvedHoldsCount * machineryBurn * 30 * 10) / 10;
-  const totalCarbonSaved = Math.round(approvedHoldsCount * carbonSaved * 30 * 10) / 10;
-  const financialStorageSaved = approvedHoldsCount * 125; // mock $125 per SKU warehouse holding paused
+  const totalWorkingCapitalSaved = approvedHoldsCount * workingCapitalFactor * 30;
+  const totalCapacityHoursGained = Math.round(approvedHoldsCount * machineryHoursGained * 30 * 10) / 10;
+  const totalStorageSaved = approvedHoldsCount * godownStorageFactor * 30;
+  const totalCreditRiskSaved = approvedHoldsCount * creditRiskFactor * 30;
 
   // Generate 30-day custom forecasting datasets for SKU-999, SKU-888, SKU-777 in Research Lab
   const getResearchChartData = (sku: string, surge: number) => {
@@ -440,45 +445,45 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            {/* Green Resource Savings Counters */}
+            {/* Indian Market Supply Chain Telemetry Counters */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
               <Card className="flex flex-col gap-1 relative overflow-hidden group border-md-primary/10">
-                <div className="h-9 w-9 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <Leaf className="h-4.5 w-4.5 text-green-600" />
+                <div className="h-9 w-9 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
+                  <IndianRupee className="h-4.5 w-4.5 text-emerald-600" />
                 </div>
-                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">CO2 Saved (Est. 30d)</span>
-                <span className="text-2xl font-black text-md-on-background mt-0.5">{totalCarbonSaved} kg</span>
-                <p className="text-[9px] text-green-600 font-bold mt-1">Based on paused factory hours</p>
-                <div className="absolute right-0 bottom-0 w-16 h-16 bg-green-500/5 rounded-full blur-xl pointer-events-none" />
+                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Working Capital Freed (30d)</span>
+                <span className="text-2xl font-black text-md-on-background mt-0.5">₹{totalWorkingCapitalSaved.toLocaleString('en-IN')}</span>
+                <p className="text-[9px] text-emerald-600 font-bold mt-1">Freed from overproduced inventory</p>
+                <div className="absolute right-0 bottom-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
 
               <Card className="flex flex-col gap-1 relative overflow-hidden group">
-                <div className="h-9 w-9 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <Flame className="h-4.5 w-4.5 text-red-600" />
+                <div className="h-9 w-9 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
+                  <Shuffle className="h-4.5 w-4.5 text-indigo-600" />
                 </div>
-                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Fuel Burn Saved (30d)</span>
-                <span className="text-2xl font-black text-md-on-background mt-0.5">{totalFuelSaved} Gal</span>
-                <p className="text-[9px] text-red-500 font-bold mt-1">Pausing overproduction loops</p>
-                <div className="absolute right-0 bottom-0 w-16 h-16 bg-red-500/5 rounded-full blur-xl pointer-events-none" />
+                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Capacity Shift Gain (30d)</span>
+                <span className="text-2xl font-black text-md-on-background mt-0.5">{totalCapacityHoursGained} Hours</span>
+                <p className="text-[9px] text-indigo-500 font-bold mt-1">Machine hours reallocated to high demand</p>
+                <div className="absolute right-0 bottom-0 w-16 h-16 bg-indigo-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
 
               <Card className="flex flex-col gap-1 relative overflow-hidden group">
                 <div className="h-9 w-9 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <TrendingUp className="h-4.5 w-4.5 text-blue-600" />
+                  <Boxes className="h-4.5 w-4.5 text-blue-600" />
                 </div>
-                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Storage Cost Savings</span>
-                <span className="text-2xl font-black text-md-on-background mt-0.5">${financialStorageSaved.toLocaleString()}</span>
-                <p className="text-[9px] text-blue-600 font-bold mt-1">Reduced distributor stock burdens</p>
+                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Godown Storage Savings</span>
+                <span className="text-2xl font-black text-md-on-background mt-0.5">₹{totalStorageSaved.toLocaleString('en-IN')}</span>
+                <p className="text-[9px] text-blue-600 font-bold mt-1">Reduced distributor stock burden</p>
                 <div className="absolute right-0 bottom-0 w-16 h-16 bg-blue-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
 
               <Card className="flex flex-col gap-1 relative overflow-hidden group">
                 <div className="h-9 w-9 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-1.5 shadow-sm">
-                  <Activity className="h-4.5 w-4.5 text-amber-600" />
+                  <ShieldAlert className="h-4.5 w-4.5 text-amber-600" />
                 </div>
-                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">OEE Load Efficiency</span>
-                <span className="text-2xl font-black text-md-on-background mt-0.5">94.2%</span>
-                <p className="text-[9px] text-amber-500 font-bold mt-1">Optimal manufacturing output</p>
+                <span className="text-[10px] font-bold text-md-on-surface-variant uppercase tracking-wider">Credit Default Risk Saved</span>
+                <span className="text-2xl font-black text-md-on-background mt-0.5">₹{totalCreditRiskSaved.toLocaleString('en-IN')}</span>
+                <p className="text-[9px] text-amber-500 font-bold mt-1">Mitigated payment default lockup</p>
                 <div className="absolute right-0 bottom-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
               </Card>
             </div>
@@ -1198,83 +1203,145 @@ export default function DashboardPage() {
             {/* Header title */}
             <div className="flex justify-between items-center bg-md-surface-container-low border border-md-outline/5 rounded-[24px] p-6 shadow-sm">
               <div>
-                <h1 className="text-xl font-black text-md-on-background tracking-tight">Environmental Constants Configuration</h1>
-                <p className="text-xs text-md-on-surface-variant">Configure physical machinery burn outputs and carbon emission equations to tune telemetry metrics.</p>
+                <h1 className="text-xl font-black text-md-on-background tracking-tight">Factory & Channel Telemetry Configuration</h1>
+                <p className="text-xs text-md-on-surface-variant">Tune the physical operational reallocations and capital recovery models for the Indian supply chain ecosystem.</p>
               </div>
             </div>
 
             {/* Constant Sliders Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               
-              {/* Slider 1: Machinery Fuel Burn */}
-              <Card className="flex flex-col justify-between p-6 h-56">
+              {/* Slider 1: Working Capital Freed Factor */}
+              <Card className="flex flex-col justify-between p-6 h-60">
                 <div>
-                  <span className="text-[10px] font-black text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">Machinery fuel burn rate</span>
-                  <h3 className="text-xs font-black text-md-on-background mt-2">Active Machinery Fuel Consumption</h3>
+                  <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Working Capital Recovery</span>
+                  <h3 className="text-xs font-black text-md-on-background mt-2">Working Capital Freed Factor</h3>
                   <p className="text-[11px] text-md-on-surface-variant mt-1.5 leading-relaxed">
-                    Gallons of gas/fuel consumed per day by active factory manufacturing assembly lines per SKU.
+                    Liquid capital (₹) locked in raw materials & production wages saved per day for each paused SKU line.
                   </p>
                 </div>
 
                 <div className="mt-4">
                   <div className="flex justify-between text-[11px] font-bold mb-2">
-                    <span>Rate (Gal/Day/SKU)</span>
-                    <span className="text-md-primary font-black">{machineryBurn} Gallons</span>
+                    <span>Rate (₹/Day/SKU)</span>
+                    <span className="text-md-primary font-black">₹{workingCapitalFactor.toLocaleString('en-IN')}</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="1000" 
+                    max="50000" 
+                    step="500"
+                    value={workingCapitalFactor}
+                    onChange={(e) => setWorkingCapitalFactor(Number(e.target.value))}
+                    className="w-full h-1.5 bg-md-surface-container-low rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[9px] text-md-on-surface-variant mt-1">
+                    <span>₹1,000</span>
+                    <span>₹50,000</span>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Slider 2: Assembly Line Capacity Gained */}
+              <Card className="flex flex-col justify-between p-6 h-60">
+                <div>
+                  <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">Capacity Reallocation</span>
+                  <h3 className="text-xs font-black text-md-on-background mt-2">Assembly Shift Hours Gained</h3>
+                  <p className="text-[11px] text-md-on-surface-variant mt-1.5 leading-relaxed">
+                    Machine and assembly line hours freed per day per paused SKU to immediately shift to high-performance products.
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <div className="flex justify-between text-[11px] font-bold mb-2">
+                    <span>Hours (Hours/Day/SKU)</span>
+                    <span className="text-md-primary font-black">{machineryHoursGained} Hours</span>
                   </div>
                   <input 
                     type="range" 
                     min="1.0" 
-                    max="10.0" 
-                    step="0.1"
-                    value={machineryBurn}
-                    onChange={(e) => setMachineryBurn(Number(e.target.value))}
+                    max="24.0" 
+                    step="0.5"
+                    value={machineryHoursGained}
+                    onChange={(e) => setMachineryHoursGained(Number(e.target.value))}
                     className="w-full h-1.5 bg-md-surface-container-low rounded-lg appearance-none cursor-pointer"
                   />
                   <div className="flex justify-between text-[9px] text-md-on-surface-variant mt-1">
-                    <span>1.0 Gal</span>
-                    <span>10.0 Gal</span>
+                    <span>1.0 Hr</span>
+                    <span>24.0 Hrs</span>
                   </div>
                 </div>
               </Card>
 
-              {/* Slider 2: Carbon saved coefficient */}
-              <Card className="flex flex-col justify-between p-6 h-56">
+              {/* Slider 3: Godown Storage Rent Savings */}
+              <Card className="flex flex-col justify-between p-6 h-60">
                 <div>
-                  <span className="text-[10px] font-black text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">CO2 avoidance factor</span>
-                  <h3 className="text-xs font-black text-md-on-background mt-2">Factory Carbon Output Coefficient</h3>
+                  <span className="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">Godown Savings</span>
+                  <h3 className="text-xs font-black text-md-on-background mt-2">Godown Storage Rent Savings</h3>
                   <p className="text-[11px] text-md-on-surface-variant mt-1.5 leading-relaxed">
-                    Kilograms of carbon dioxide output prevented per day when an overproduced SKU line is held.
+                    Saved warehousing and stockist godown space allocation cost per day when a low-demand SKU is held.
                   </p>
                 </div>
 
                 <div className="mt-4">
                   <div className="flex justify-between text-[11px] font-bold mb-2">
-                    <span>Carbon Saved (kg/Day)</span>
-                    <span className="text-md-primary font-black">{carbonSaved} kg CO2</span>
+                    <span>Rate (₹/Day/SKU)</span>
+                    <span className="text-md-primary font-black">₹{godownStorageFactor.toLocaleString('en-IN')}</span>
                   </div>
                   <input 
                     type="range" 
-                    min="2.0" 
-                    max="25.0" 
-                    step="0.1"
-                    value={carbonSaved}
-                    onChange={(e) => setCarbonSaved(Number(e.target.value))}
+                    min="1000" 
+                    max="25000" 
+                    step="250"
+                    value={godownStorageFactor}
+                    onChange={(e) => setGodownStorageFactor(Number(e.target.value))}
                     className="w-full h-1.5 bg-md-surface-container-low rounded-lg appearance-none cursor-pointer"
                   />
                   <div className="flex justify-between text-[9px] text-md-on-surface-variant mt-1">
-                    <span>2.0 kg</span>
-                    <span>25.0 kg</span>
+                    <span>₹1,000</span>
+                    <span>₹25,000</span>
                   </div>
                 </div>
               </Card>
 
-              {/* Slider 3: Safety stock buffer target */}
-              <Card className="flex flex-col justify-between p-6 h-56">
+              {/* Slider 4: Credit Default Risk Offset */}
+              <Card className="flex flex-col justify-between p-6 h-60">
                 <div>
-                  <span className="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">Safety buffer limit</span>
+                  <span className="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Risk Prevention</span>
+                  <h3 className="text-xs font-black text-md-on-background mt-2">Credit Default Risk Protection</h3>
+                  <p className="text-[11px] text-md-on-surface-variant mt-1.5 leading-relaxed">
+                    Estimated market payment default risk avoided by preventing overproduction channel stock lockups.
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <div className="flex justify-between text-[11px] font-bold mb-2">
+                    <span>Factor (₹/Day/SKU)</span>
+                    <span className="text-md-primary font-black">₹{creditRiskFactor.toLocaleString('en-IN')}</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="5000" 
+                    max="100000" 
+                    step="1000"
+                    value={creditRiskFactor}
+                    onChange={(e) => setCreditRiskFactor(Number(e.target.value))}
+                    className="w-full h-1.5 bg-md-surface-container-low rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[9px] text-md-on-surface-variant mt-1">
+                    <span>₹5,000</span>
+                    <span>₹1,00,000</span>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Slider 5: Safety stock buffer target */}
+              <Card className="flex flex-col justify-between p-6 h-60">
+                <div>
+                  <span className="text-[10px] font-black text-slate-600 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-full">Safety Buffer Limit</span>
                   <h3 className="text-xs font-black text-md-on-background mt-2">Global Target Safety Buffer</h3>
                   <p className="text-[11px] text-md-on-surface-variant mt-1.5 leading-relaxed">
-                    Target baseline units buffer held in distributor warehouses to absorb market volatility.
+                    Target baseline units buffer held in distributor warehouses to absorb Indian retail market volatility.
                   </p>
                 </div>
 
@@ -1303,7 +1370,7 @@ export default function DashboardPage() {
 
             {/* Explanation box */}
             <Card className="p-5 bg-md-primary/5 border border-md-primary/10 rounded-[20px] text-xs text-md-on-background leading-relaxed">
-              <strong>Interactive Telemetry Note:</strong> Modifying these constant parameters dynamically updates all green counters on your **Overview Dashboard** and safety threshold baselines on your **Research Lab charts** in real time! Try adjusting active machinery burn rates and navigate back to view updated CO2 / Fuel Burn metrics.
+              <strong>Interactive Indian Supply Chain Telemetry Note:</strong> Modifying these constants dynamically updates all financial recovery and capacity shift reallocations on your **Overview Dashboard** and safety threshold baselines on your **Research Lab charts** in real time! Try adjusting the Working Capital and Capacity Shift constants to see immediate impact projections.
             </Card>
 
           </div>
