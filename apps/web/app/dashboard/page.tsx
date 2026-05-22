@@ -200,14 +200,6 @@ export default function DashboardPage() {
 
         <nav className="flex flex-col gap-2">
           <button
-            onClick={() => router.push("/")}
-            className="flex items-center gap-3.5 w-full p-3 rounded-full text-xs font-bold text-md-on-surface-variant hover:bg-md-primary/5 hover:text-md-primary transition-all duration-200"
-          >
-            <Boxes className="h-4.5 w-4.5" />
-            <span>Legacy Console</span>
-          </button>
-          
-          <button
             onClick={() => fetchRecommendations()}
             className="flex items-center gap-3.5 w-full p-3 rounded-full text-xs font-bold bg-md-secondary-container text-md-on-secondary-container shadow-sm transition-all duration-200"
           >
