@@ -37,13 +37,13 @@ The platform goes beyond generic supply chain tools by replacing irrelevant West
 
 ## 🏆 Project Team
 
-| S.No | Name | Enrollment Number |
-|------|------|------------------|
-| 1 | Challa Lokesh | 2303031240031 |
-| 2 | Khatri Abdul Kadir | 2303051240368 |
-| 3 | Govind Sankhala | 2303051240199 |
-| 4 | Manikant Kumar | 2303031310005 |
-| 5 | D. Kasim Basha | 2303031460209 |
+| S.No | Name | GitHub |
+|------|------|--------|
+| 1 | Challa Lokesh | — |
+| 2 | Khatri Abdul Kadir | [@KadirKh](https://github.com/KadirKh) |
+| 3 | Govind Sankhala | [@govindsankla90](https://github.com/govindsankla90) |
+| 4 | Manikant Kumar | [@manikantbindass](https://github.com/manikantbindass) |
+| 5 | D. Kasim Basha | — |
 
 **Bachelor of Technology — Computer Science & Engineering**
 
