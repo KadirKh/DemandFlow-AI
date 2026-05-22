@@ -1,0 +1,41 @@
+product_id,warehouse_location,current_inventory_counts
+COLA-A100,Bottling Plant - Noida,14.2
+COLA-A100,Distributor Cold Store - Delhi,25.4
+COLA-A100,Distributor Cold Store - Lucknow,19.2
+COLA-A100,Retail Chain - Gurugram,10.4
+COLA-B200,Bottling Plant - Noida,16.5
+COLA-B200,Distributor Cold Store - Delhi,54.9
+COLA-B200,Distributor Cold Store - Lucknow,23.8
+COLA-B200,Retail Chain - Gurugram,10.2
+JUICE-C300,Bottling Plant - Noida,12.3
+JUICE-C300,Distributor Cold Store - Delhi,44.7
+JUICE-C300,Distributor Cold Store - Lucknow,19.4
+JUICE-C300,Retail Chain - Gurugram,5.7
+WATER-D400,Bottling Plant - Noida,10.7
+WATER-D400,Distributor Cold Store - Delhi,25.2
+WATER-D400,Distributor Cold Store - Lucknow,19.8
+WATER-D400,Retail Chain - Gurugram,11.7
+ENERGY-E500,Bottling Plant - Noida,14.7
+ENERGY-E500,Distributor Cold Store - Delhi,44.3
+ENERGY-E500,Distributor Cold Store - Lucknow,30.7
+ENERGY-E500,Retail Chain - Gurugram,13.1
+LASSI-F600,Bottling Plant - Noida,14.7
+LASSI-F600,Distributor Cold Store - Delhi,40.6
+LASSI-F600,Distributor Cold Store - Lucknow,29.6
+LASSI-F600,Retail Chain - Gurugram,11.7
+NIMBU-G700,Bottling Plant - Noida,18.6
+NIMBU-G700,Distributor Cold Store - Delhi,14.8
+NIMBU-G700,Distributor Cold Store - Lucknow,20.0
+NIMBU-G700,Retail Chain - Gurugram,6.9
+MANGO-H800,Bottling Plant - Noida,19.2
+MANGO-H800,Distributor Cold Store - Delhi,36.2
+MANGO-H800,Distributor Cold Store - Lucknow,23.9
+MANGO-H800,Retail Chain - Gurugram,13.6
+SODA-I900,Bottling Plant - Noida,19.7
+SODA-I900,Distributor Cold Store - Delhi,50.9
+SODA-I900,Distributor Cold Store - Lucknow,33.5
+SODA-I900,Retail Chain - Gurugram,13.5
+TEA-J001,Bottling Plant - Noida,10.6
+TEA-J001,Distributor Cold Store - Delhi,16.0
+TEA-J001,Distributor Cold Store - Lucknow,22.6
+TEA-J001,Retail Chain - Gurugram,14.9
