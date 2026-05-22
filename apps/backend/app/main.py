@@ -6,11 +6,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .routers import auth, dashboard, products, recommendations, upload
 from .logging_config import setup_logger
+from .utils.migrations import run_schema_migrations
 
 logger = setup_logger(__name__)
 
 # Create tables automatically on startup (especially useful for SQLite)
 Base.metadata.create_all(bind=engine)
+run_schema_migrations(engine)
 
 app = FastAPI(
     title="DemandFlow-AI Core API",
