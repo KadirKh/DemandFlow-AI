@@ -35,7 +35,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await ApiClient.register(email, password, role);
-      router.push("/");
+      router.push("/upload");
     } catch (err: any) {
       setError(err.message || "Failed to create account.");
     } finally {

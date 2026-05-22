@@ -43,6 +43,7 @@ interface ProductDetails {
     safety_stock: number;
     reorder_point: number;
     status?: string;
+    days_of_cover?: number;
   }>;
   sales_history: Array<{
     date: string;

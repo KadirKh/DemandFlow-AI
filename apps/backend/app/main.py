@@ -4,7 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
-from .routers import auth, dashboard, products, recommendations
+from .routers import auth, dashboard, products, recommendations, upload
 from .logging_config import setup_logger
 
 logger = setup_logger(__name__)
@@ -77,6 +77,7 @@ app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(products.router)
 app.include_router(recommendations.router)
+app.include_router(upload.router)
 
 @app.get("/")
 def read_root():

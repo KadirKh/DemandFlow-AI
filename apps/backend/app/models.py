@@ -94,9 +94,33 @@ class Recommendation(Base):
     __tablename__ = "recommendations"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     type = Column(String, nullable=False)  # restock, transfer, hold, switch_supplier
     entity_id = Column(String, nullable=False)  # Product SKU or ID combination
     score = Column(Float, nullable=False)  # Recommendation score/confidence
     explanation = Column(String, nullable=False)
     action_status = Column(String, default="pending")  # pending, approved, rejected, ignored
+    active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class MarketData(Base):
+    __tablename__ = "market_data"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    product_id = Column(String, index=True, nullable=False)
+    factory_production_metrics = Column(Float, nullable=False)
+    local_retail_sales = Column(Float, nullable=False)
+    pending_shopkeeper_orders = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class InventoryData(Base):
+    __tablename__ = "inventory_data"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    product_id = Column(String, index=True, nullable=False)
+    warehouse_location = Column(String, nullable=False)
+    current_inventory_counts = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+

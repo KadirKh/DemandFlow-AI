@@ -199,6 +199,49 @@ export class ApiClient {
   static getMe<T>(): Promise<T> {
     return this.get<T>("/api/auth/me");
   }
+
+  /**
+   * Check if user has uploaded data
+   */
+  static checkDataStatus(): Promise<{ has_data: boolean }> {
+    return this.get<{ has_data: boolean }>("/api/auth/check-data-status");
+  }
+
+  /**
+   * Upload file to backend
+   */
+  static async uploadFile<T>(endpoint: string, file: File): Promise<T> {
+    const url = `${API_URL}${endpoint}`;
+    const headers: Record<string, string> = {};
+    if (this.token) {
+      headers["Authorization"] = `Bearer ${this.token}`;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+
+    if (response.status === 401) {
+      this.clearAuth();
+      throw new Error("Unauthorized - please log in again");
+    }
+
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ detail: response.statusText }));
+      const message =
+        error?.error?.message || error?.detail || `HTTP ${response.status}`;
+      throw new Error(message);
+    }
+
+    return response.json();
+  }
 }
 
 // Initialize on module load

@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from ..database import get_db
-from ..models import User
+from ..models import User, MarketData, InventoryData
 from ..security import create_access_token, get_current_user
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
@@ -107,3 +107,12 @@ def get_me(user_info=Depends(get_current_user), db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         
     return user
+
+@router.get("/check-data-status")
+def check_data_status(user_info=Depends(get_current_user), db: Session = Depends(get_db)):
+    """Check if the authenticated user has uploaded market_data or inventory_data"""
+    user_id = user_info["user_id"]
+    has_market = db.query(MarketData).filter(MarketData.user_id == user_id).first() is not None
+    has_inventory = db.query(InventoryData).filter(InventoryData.user_id == user_id).first() is not None
+    return {"has_data": has_market or has_inventory}
+

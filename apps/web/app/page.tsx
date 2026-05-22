@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,12 +39,27 @@ export default function Home() {
   const [userRole, setUserRole] = useState("");
   const [theme, setTheme] = useState("light");
 
+  const checkRedirect = async () => {
+    try {
+      const res = await ApiClient.checkDataStatus();
+      if (res.has_data) {
+        router.push("/dashboard");
+      } else {
+        router.push("/upload");
+      }
+    } catch (err) {
+      console.error("Failed to check data status:", err);
+      router.push("/upload");
+    }
+  };
+
   useEffect(() => {
     // Initialize API client and check if user is already authenticated
     ApiClient.initialize();
     if (ApiClient.isAuthenticated()) {
       setIsLoggedIn(true);
       setUserRole(ApiClient.getRole() || "Manufacturer");
+      checkRedirect();
     }
 
     if (typeof window !== "undefined") {
@@ -112,6 +129,7 @@ export default function Home() {
       setIsLoggedIn(true);
       setEmail("");
       setPassword("");
+      await checkRedirect();
     } catch (err: any) {
       setError(err.message || "Failed to connect to backend API.");
     } finally {

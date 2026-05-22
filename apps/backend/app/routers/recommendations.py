@@ -27,13 +27,19 @@ class ActionRequest(BaseModel):
 
 @router.get("")
 def list_recommendations(
-    _user=Depends(get_current_user),
+    user_info=Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Get all recommendations sorted by impact score"""
     try:
-        logger.debug("Fetching all recommendations")
-        recs = db.query(Recommendation).order_by(Recommendation.score.desc()).all()
+        user_id = user_info["user_id"]
+        logger.debug(f"Fetching recommendations for user {user_id}")
+        # Fetch user's active recommendations, or pre-seeded ones if user has no uploaded data
+        recs = db.query(Recommendation).filter(
+            (Recommendation.user_id == user_id) | (Recommendation.user_id == None)
+        ).filter(
+            Recommendation.active == True
+        ).order_by(Recommendation.score.desc()).all()
         logger.info(f"Successfully fetched {len(recs)} recommendations")
         return recs
     except Exception as e:
