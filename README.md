@@ -39,7 +39,7 @@ The platform goes beyond generic supply chain tools by replacing irrelevant West
 
 | S.No | Name | GitHub |
 |------|------|--------|
-| 1 | Challa Lokesh | [@challalokesh18](https://github.com/challalokesh18) |
+| 1 | Challa Lokesh | [@lokeshchalla18](https://github.com/lokeshchalla18) |
 | 2 | Khatri Abdul Kadir | [@KadirKh](https://github.com/KadirKh) |
 | 3 | Govind Sankhala | [@govindsankla90](https://github.com/govindsankla90) |
 | 4 | Manikant Kumar | [@manikantbindass](https://github.com/manikantbindass) |
